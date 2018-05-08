@@ -7,7 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2B7B3F08209B7D15008FD482 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7B3F07209B7D15008FD482 /* main.cpp */; };
+		2B3A7371209BB4A8005722BB /* project.pbxproj in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3A7370209BB4A8005722BB /* project.pbxproj */; };
+		2B77FC36209BC3B300725B50 /* selectFromTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B77FC35209BC3B300725B50 /* selectFromTable.cpp */; };
+		2B7B3F19209B7D3C008FD482 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7B3F10209B7D3A008FD482 /* main.cpp */; };
+		2B7B3F1D209B7D3C008FD482 /* message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7B3F17209B7D3B008FD482 /* message.cpp */; };
+		2BCCC9F4209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F2209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp */; };
+		2BCCC9F6209F55E100F88139 /* updateTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F5209F55E100F88139 /* updateTable.cpp */; };
+		2BCCC9F820A1F02100F88139 /* dropTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F720A1F02100F88139 /* dropTheTable.cpp */; };
+		2BCCC9FB20A1F3D200F88139 /* createTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F920A1F3D200F88139 /* createTheTable.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +30,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2B3A7370209BB4A8005722BB /* project.pbxproj */ = {isa = PBXFileReference; lastKnownFileType = text.pbxproject; name = project.pbxproj; path = energyUsage.xcodeproj/project.pbxproj; sourceTree = "<group>"; };
+		2B77FC35209BC3B300725B50 /* selectFromTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = selectFromTable.cpp; path = "../../c++Postgres/c++Postgres/selectFromTable.cpp"; sourceTree = "<group>"; };
+		2B77FC37209BC54B00725B50 /* AllocateWorkingVectors.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AllocateWorkingVectors.hpp; sourceTree = "<group>"; };
 		2B7B3F04209B7D15008FD482 /* energyUsage */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = energyUsage; sourceTree = BUILT_PRODUCTS_DIR; };
-		2B7B3F07209B7D15008FD482 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		2B7B3F0E209B7D3A008FD482 /* myPrototypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = myPrototypes.hpp; path = "../../c++Postgres/c++Postgres/myPrototypes.hpp"; sourceTree = "<group>"; };
+		2B7B3F10209B7D3A008FD482 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = "../../c++Postgres/c++Postgres/main.cpp"; sourceTree = "<group>"; };
+		2B7B3F13209B7D3B008FD482 /* updateTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = updateTable.hpp; path = "../../c++Postgres/c++Postgres/updateTable.hpp"; sourceTree = "<group>"; };
+		2B7B3F14209B7D3B008FD482 /* makeConnectionString.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = makeConnectionString.hpp; path = "../../c++Postgres/c++Postgres/makeConnectionString.hpp"; sourceTree = "<group>"; };
+		2B7B3F15209B7D3B008FD482 /* helpFile.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = helpFile.hpp; path = "../../c++Postgres/c++Postgres/helpFile.hpp"; sourceTree = "<group>"; };
+		2B7B3F17209B7D3B008FD482 /* message.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = message.cpp; path = "../../c++Postgres/c++Postgres/message.cpp"; sourceTree = "<group>"; };
+		2BCCC9EB209D29E900F88139 /* isItDayLightSavingsTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = isItDayLightSavingsTime.h; path = ../../../C/PG/includes/isItDayLightSavingsTime.h; sourceTree = "<group>"; };
+		2BCCC9F0209D310900F88139 /* julianToGregorian.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = julianToGregorian.hpp; sourceTree = "<group>"; };
+		2BCCC9F2209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = insertIBucketizedEnergyValuesIntoTable.cpp; sourceTree = "<group>"; };
+		2BCCC9F3209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = insertIBucketizedEnergyValuesIntoTable.hpp; sourceTree = "<group>"; };
+		2BCCC9F5209F55E100F88139 /* updateTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = updateTable.cpp; sourceTree = "<group>"; };
+		2BCCC9F720A1F02100F88139 /* dropTheTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dropTheTable.cpp; sourceTree = "<group>"; };
+		2BCCC9F920A1F3D200F88139 /* createTheTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = createTheTable.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,17 +54,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B3A7371209BB4A8005722BB /* project.pbxproj in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B3A736F209BB4A8005722BB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2B3A7370209BB4A8005722BB /* project.pbxproj */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		2B7B3EFB209B7D15008FD482 = {
 			isa = PBXGroup;
 			children = (
 				2B7B3F06209B7D15008FD482 /* energyUsage */,
 				2B7B3F05209B7D15008FD482 /* Products */,
+				2B3A736F209BB4A8005722BB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,7 +89,21 @@
 		2B7B3F06209B7D15008FD482 /* energyUsage */ = {
 			isa = PBXGroup;
 			children = (
-				2B7B3F07209B7D15008FD482 /* main.cpp */,
+				2BCCC9F0209D310900F88139 /* julianToGregorian.hpp */,
+				2B7B3F15209B7D3B008FD482 /* helpFile.hpp */,
+				2B7B3F14209B7D3B008FD482 /* makeConnectionString.hpp */,
+				2B77FC37209BC54B00725B50 /* AllocateWorkingVectors.hpp */,
+				2B7B3F0E209B7D3A008FD482 /* myPrototypes.hpp */,
+				2B7B3F13209B7D3B008FD482 /* updateTable.hpp */,
+				2BCCC9F5209F55E100F88139 /* updateTable.cpp */,
+				2BCCC9EB209D29E900F88139 /* isItDayLightSavingsTime.h */,
+				2B7B3F10209B7D3A008FD482 /* main.cpp */,
+				2BCCC9F2209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp */,
+				2B77FC35209BC3B300725B50 /* selectFromTable.cpp */,
+				2BCCC9F720A1F02100F88139 /* dropTheTable.cpp */,
+				2BCCC9F920A1F3D200F88139 /* createTheTable.cpp */,
+				2BCCC9F3209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.hpp */,
+				2B7B3F17209B7D3B008FD482 /* message.cpp */,
 			);
 			path = energyUsage;
 			sourceTree = "<group>";
@@ -118,7 +164,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B7B3F08209B7D15008FD482 /* main.cpp in Sources */,
+				2B77FC36209BC3B300725B50 /* selectFromTable.cpp in Sources */,
+				2BCCC9F6209F55E100F88139 /* updateTable.cpp in Sources */,
+				2B7B3F19209B7D3C008FD482 /* main.cpp in Sources */,
+				2BCCC9FB20A1F3D200F88139 /* createTheTable.cpp in Sources */,
+				2B7B3F1D209B7D3C008FD482 /* message.cpp in Sources */,
+				2BCCC9F4209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp in Sources */,
+				2BCCC9F820A1F02100F88139 /* dropTheTable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,9 +228,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = /usr/local/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-lpq",
+					"-lpqxx",
+					"-lgsl",
+				);
 				SDKROOT = macosx;
 			};
 			name = Debug;
