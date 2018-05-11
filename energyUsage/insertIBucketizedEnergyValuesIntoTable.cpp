@@ -6,7 +6,7 @@
 //  Copyright © 2018 CliffordCampo. All rights reserved.
 //
 
-#include "insertIBucketizedEnergyValuesIntoTable.hpp"
+
 //
 //  insertIntoTable.cpp
 //  c++Postgres
@@ -16,15 +16,14 @@
 //
 #include <iostream>
 
-#ifndef __PQXX_PQXX__
-#define __PQXX_PQXX__
 #include <pqxx/pqxx>
-#endif
 
-#ifndef __MYPROTOTYPES__
-#define __MYPROTOTYPES__
+
+#include "insertIBucketizedEnergyValuesIntoTable.hpp"
 #include "myPrototypes.hpp"
-#endif
+
+
+#include "makeConnectionString.hpp"
 
 using namespace std;
 using namespace pqxx;
@@ -32,6 +31,7 @@ extern const char *dropTable;
 extern const char *createTable;
 extern const char *insertIntoTable;
 int insertBucketizedEnergyValuesIntoTable(pqxx::connection *ptrC, \
+                                          BitFlags *mcs, \
                                           double avgtemp, \
                                           double avgeu, \
                                           double stddeveu, \
@@ -46,19 +46,19 @@ int insertBucketizedEnergyValuesIntoTable(pqxx::connection *ptrC, \
     sql = sqlbuffer; 
     int rcCOpen;
     if (ptrC->is_open()) {
-        std::cout << "Database, " << ptrC->dbname() << ", was already opened as we entered " __FILE__ <<  std::endl;
+        if (mcs->debug3) std::cout << "Database, " << ptrC->dbname() << ", was already opened as we entered " __FILE__ <<  std::endl;
     } else {
         try {
-            std::cout << "Database " << ptrC->dbname() << " was NOT opened as we entered " << __FILE__ << "so we'll try to open it." << std::endl;
+            if (mcs->debug3) std::cout << "Database " << ptrC->dbname() << " was NOT opened as we entered " << __FILE__ << "so we'll try to open it." << std::endl;
             ptrC->activate();   //Connect to the LocalWeather Database
             rcCOpen = ptrC->is_open();
             if (rcCOpen) {
-                std::cout << "Opened database: " << ptrC->dbname() << std::endl;
+               if (mcs->debug3) std::cout << "Opened database: " << ptrC->dbname() << std::endl;
             }
             
             
         } catch (const std::exception &e) {
-            std::cout << __FILE__ " failed to open database. " << std::endl;
+            std::cerr<< __FILE__ " failed to open database. " << std::endl;
             std::cerr << e.what() << std::endl;
             return 1;
         } //End of Try/catch
@@ -68,14 +68,17 @@ int insertBucketizedEnergyValuesIntoTable(pqxx::connection *ptrC, \
     work W(*ptrC);  //Create a work object, W.
 
     if (processingFlag & DOINSERTINTOTABLE) {
-    /* Execute SQL query */
+
         sprintf (sqlbuffer, insertIntoTable, avgtemp, avgeu, stddeveu, mineu, maxeu, counteu); //CREATE the insert into SQL statement
+        /* Execute the INSERT INTO SQL statement we just constructed with above sprintf statement */
         W.exec( sql );
         W.commit();
     }
-    cout << "Record inserted successfully" << endl;
+    if (mcs->debug3) {
+        if (mcs->debug3) std::cout << "Record inserted successfully" << endl;
+    }
     if (disconnectFlag) {
-        std::cout << "In file, " __FILE__ ", we're disconnecting from the database because the disconnectFlag is set to: " << (int)disconnectFlag << std::endl;
+        if (mcs->debug3) std::cout << "In file, " __FILE__ ", we're disconnecting from the database because the disconnectFlag is set to: " << (int)disconnectFlag << std::endl;
         ptrC->disconnect();
     }
     return 0;

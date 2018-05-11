@@ -5,18 +5,20 @@
 //  Created by Clifford Campo on 5/8/18.
 //  Copyright © 2018 CliffordCampo. All rights reserved.
 //
-#include "myPrototypes.hpp"
+
+
 #include <iostream>
 #include <cstring>
 #include <pqxx/pqxx>
+#include "myPrototypes.hpp"
 extern const char *createTable;
 extern const char *createTempTable;
-int createTheTable(pqxx::connection *ptrC) {
+int createTheTable(pqxx::connection *ptrConnectionStringObject) {
     int rc=0;
-    pqxx::work Work(*ptrC);  // Create a work object, W.
+    pqxx::work WorkObject(*ptrConnectionStringObject);  // Create a work object, W.
     try {
-        Work.exec(createTable);
-        Work.commit(); // It is by executing this instruction that the table gets created!
+        WorkObject.exec(createTable);
+        WorkObject.commit(); // It is by executing this instruction that the table gets created!
     } catch (const std::exception &e) {
         rc = 2;
     }

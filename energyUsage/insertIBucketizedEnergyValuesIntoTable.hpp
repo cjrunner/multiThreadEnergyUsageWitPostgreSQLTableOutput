@@ -10,10 +10,10 @@
 #define insertIBucketizedEnergyValuesIntoTable_hpp
 
 #include <gsl/gsl_multifit.h>
+#include "makeConnectionString.hpp" //Need this to resolve the inherited MakeConnectionString class.
 
-#endif /* insertIBucketizedEnergyValuesIntoTable_hpp */
-enum bucketColNames  {_avgtemp, _avgeu, _stddeveu, _mineu, _maxeu, _countu};
-class SetupForMultiFit {
+enum bucketColNames  {_avgtemp, _avgeu, _stddeveu, _mineu, _maxeu, _countu}; 
+class SetupForMultiFit : public MakeConnectionString {
 private:
     size_t polynomialDegree; //From constructor parameter;
     size_t numberOfEntries;  // From count
@@ -47,7 +47,7 @@ int outputPolynomial(const char *);
 double outputCovarianceMatrix(const char *);  //Prints out covarience matrix and returns value of χ-squared.
 
 };
-
+#endif /* insertIBucketizedEnergyValuesIntoTable_hpp */
 
 
 

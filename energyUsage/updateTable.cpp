@@ -37,7 +37,7 @@ int updateTable(pqxx::connection *ptrC, const char *const mySQL, const char *con
         if (ptrC->is_open()) {
             std::cout << "Opened database successfully: " << ptrC->dbname() <<std::endl;
         } else {
-            std::cout << "Can't open database" <<std::endl;
+            std::cerr << "Can't open database" <<std::endl;
             return 1;
         }
     } catch (const std::exception &e) {

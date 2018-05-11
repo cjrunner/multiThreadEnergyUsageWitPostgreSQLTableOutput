@@ -9,12 +9,12 @@
 #include <cstring>
 #include <pqxx/pqxx>
 extern const char *dropTable;
-int dropTheTable(pqxx::connection *ptrC) { 
+int dropTheTable(pqxx::connection *ptrConnectionStringObject) {
     int rc=0;
-    pqxx::work W(*ptrC);  // Create a work object, W.
+    pqxx::work WorkObject(*ptrConnectionStringObject);  // Create a work object, W.
     try {
-        W.exec(dropTable);
-        W.commit();
+        WorkObject.exec(dropTable);
+        WorkObject.commit();
     } catch (const std::exception &e) {
         rc = 4;
     }

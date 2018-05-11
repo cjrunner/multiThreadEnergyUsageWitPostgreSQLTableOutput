@@ -10,7 +10,8 @@
 #define AllocateWorkingVectors_hpp
 
 #include <iostream>
-class AllocateWorkingVectors {
+#include "makeConnectionString.hpp" //Need this include to resolve the inherited MakeConnectionString class.
+class AllocateWorkingVectors : public MakeConnectionString { // AllocateWorkingVectors object inherits the MakeConnectionString Object
 private:
     size_t numberOfRows;
 public:
@@ -22,10 +23,10 @@ public:
 };
 AllocateWorkingVectors::AllocateWorkingVectors(size_t nor) {
     this->numberOfRows = nor;
-    this->temperatureVector = new double[nor];
-    this->energyUsageVector = new double[nor];
-    this->weightVector = new double[nor];
-    std::cout << "The TemperatureVector is of type: " << typeid(this->temperatureVector).name() << ", The energyUsageVector is of type " << typeid(this->energyUsageVector).name() << ", and the weightVector is of type " << typeid(this->weightVector).name() << std::endl; //WTF!
+    this->temperatureVector = new double[nor];  /* << =================================== */
+    this->energyUsageVector = new double[nor];  /* << =================================== */
+    this->weightVector = new double[nor];        /* << =================================== */
+    if (this->debugFlags.debug3) std::cout << "The TemperatureVector is of type: " << typeid(this->temperatureVector).name() << ", The energyUsageVector is of type " << typeid(this->energyUsageVector).name() << ", and the weightVector is of type " << typeid(this->weightVector).name() << std::endl; //WTF!
     
 }
 AllocateWorkingVectors::~AllocateWorkingVectors () {
