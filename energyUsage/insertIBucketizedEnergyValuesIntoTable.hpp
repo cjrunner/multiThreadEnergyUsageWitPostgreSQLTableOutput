@@ -21,12 +21,15 @@ private:
     size_t &maxNumberOfRows = numberOfEntries;  // Use a c++-type reference rather than a C-type pointer.
 
 public:
+
     size_t  onePlusPolynomialDegree;
     const double initialValue = 1;
     double dblwork;
     double computedValue;
     double chiSquared;
     double *ptrChiSquared;
+    double TSS; //total sum of squares
+    double goodnessOfFit;
     size_t loopCounter;
     gsl_multifit_linear_workspace *work;
     gsl_matrix *independentVariable;

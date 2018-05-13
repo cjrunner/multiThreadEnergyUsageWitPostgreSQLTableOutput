@@ -8,7 +8,9 @@
 
 #ifndef AllocateWorkingVectors_hpp
 #define AllocateWorkingVectors_hpp
-
+/*
+ AllcateWorkingVectors has been moved to makeConnectioString.hpp as a subclass
+ 
 #include <iostream>
 #include "makeConnectionString.hpp" //Need this include to resolve the inherited MakeConnectionString class.
 class AllocateWorkingVectors : public MakeConnectionString { // AllocateWorkingVectors object inherits the MakeConnectionString Object
@@ -23,9 +25,9 @@ public:
 };
 AllocateWorkingVectors::AllocateWorkingVectors(size_t nor) {
     this->numberOfRows = nor;
-    this->temperatureVector = new double[nor];  /* << =================================== */
-    this->energyUsageVector = new double[nor];  /* << =================================== */
-    this->weightVector = new double[nor];        /* << =================================== */
+    this->temperatureVector = new double[nor];  // << ===================================
+    this->energyUsageVector = new double[nor];  // << ===================================
+    this->weightVector = new double[nor];        // << ===================================
     if (this->debugFlags.debug3) std::cout << "The TemperatureVector is of type: " << typeid(this->temperatureVector).name() << ", The energyUsageVector is of type " << typeid(this->energyUsageVector).name() << ", and the weightVector is of type " << typeid(this->weightVector).name() << std::endl; //WTF!
     
 }
@@ -38,4 +40,6 @@ AllocateWorkingVectors::~AllocateWorkingVectors () {
     delete this->weightVector;
     
 }
+
+*/
 #endif /* AllocateWorkingMemory_h */

@@ -30,7 +30,7 @@ using namespace pqxx;
 extern const char *dropTable;
 extern const char *createTable;
 extern const char *insertIntoTable;
-int insertBucketizedEnergyValuesIntoTable(pqxx::connection *ptrC, \
+int insertBucketizedEnergyValuesIntoTable(const char *connStr, \
                                           BitFlags *mcs, \
                                           double avgtemp, \
                                           double avgeu, \
@@ -43,44 +43,30 @@ int insertBucketizedEnergyValuesIntoTable(pqxx::connection *ptrC, \
     //    int rc=0;
     char *sql; //Need to do const char *sql rather than just char *sql to make the C++11 compiler happy.
     char sqlbuffer[200];
-    sql = sqlbuffer; 
-    int rcCOpen;
-    if (ptrC->is_open()) {
-        if (mcs->debug3) std::cout << "Database, " << ptrC->dbname() << ", was already opened as we entered " __FILE__ <<  std::endl;
+    sql = sqlbuffer;
+
+    pqxx::connection *ptrForInsert = new pqxx::connection (connStr);  /* << =================================== */ //W A R N I N G: new, unlike calloc, does not pre-initialize acquired memory to a known state.
+    if (ptrForInsert->is_open()) {
+        if (mcs->debug2) std::cout << "We successfully opened a second connection to database " << ptrForInsert->dbname() << " for doing inserts. " << std::endl;
+        ptrForInsert->activate();
     } else {
-        try {
-            if (mcs->debug3) std::cout << "Database " << ptrC->dbname() << " was NOT opened as we entered " << __FILE__ << "so we'll try to open it." << std::endl;
-            ptrC->activate();   //Connect to the LocalWeather Database
-            rcCOpen = ptrC->is_open();
-            if (rcCOpen) {
-               if (mcs->debug3) std::cout << "Opened database: " << ptrC->dbname() << std::endl;
-            }
-            
-            
-        } catch (const std::exception &e) {
-            std::cerr<< __FILE__ " failed to open database. " << std::endl;
-            std::cerr << e.what() << std::endl;
-            return 1;
-        } //End of Try/catch
-    } // End of if/else statement
-
-  
-    work W(*ptrC);  //Create a work object, W.
-
-    if (processingFlag & DOINSERTINTOTABLE) {
-
-        sprintf (sqlbuffer, insertIntoTable, avgtemp, avgeu, stddeveu, mineu, maxeu, counteu); //CREATE the insert into SQL statement
-        /* Execute the INSERT INTO SQL statement we just constructed with above sprintf statement */
-        W.exec( sql );
-        W.commit();
+        std::cerr << "We failed to another connection to database for doing simultaneous inserts into another table " << std::endl;
     }
+
+    sprintf (sqlbuffer, insertIntoTable, avgtemp, avgeu, stddeveu, mineu, maxeu, counteu); //CREATE the insert into SQL statement
+    if ( mcs->debug3  ) std::cout << "Insert looks like: " << sqlbuffer << std::endl;
+    work WI(*ptrForInsert);  //Create a work object, WI.
+    /* Execute the INSERT INTO SQL statement we just constructed with above sprintf statement */
+
+    WI.exec( sqlbuffer );
+    WI.commit();
+    
     if (mcs->debug3) {
         if (mcs->debug3) std::cout << "Record inserted successfully" << endl;
     }
-    if (disconnectFlag) {
-        if (mcs->debug3) std::cout << "In file, " __FILE__ ", we're disconnecting from the database because the disconnectFlag is set to: " << (int)disconnectFlag << std::endl;
-        ptrC->disconnect();
-    }
+
+//    WI.~transaction(); //End the insert transaction by destroying the work object, WI.
+    ptrForInsert->disconnect();
     return 0;
 }
 //  C L A S S    S E T U P F O R M U L T I F I T ' s      M E M B E R    F U N C T I O N S
