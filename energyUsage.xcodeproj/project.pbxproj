@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		2B3A7371209BB4A8005722BB /* project.pbxproj in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3A7370209BB4A8005722BB /* project.pbxproj */; };
+		2B74C60620A8930700CF70ED /* dropTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B74C60420A8930700CF70ED /* dropTheTable.cpp */; };
+		2B74C60720A8930700CF70ED /* createTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B74C60520A8930700CF70ED /* createTheTable.cpp */; };
 		2B77FC36209BC3B300725B50 /* selectFromTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B77FC35209BC3B300725B50 /* selectFromTable.cpp */; };
 		2B7B3F19209B7D3C008FD482 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7B3F10209B7D3A008FD482 /* main.cpp */; };
 		2B7B3F1D209B7D3C008FD482 /* message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7B3F17209B7D3B008FD482 /* message.cpp */; };
 		2BCCC9F4209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F2209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp */; };
-		2BCCC9F820A1F02100F88139 /* dropTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F720A1F02100F88139 /* dropTheTable.cpp */; };
-		2BCCC9FB20A1F3D200F88139 /* createTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BCCC9F920A1F3D200F88139 /* createTheTable.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,6 +30,10 @@
 
 /* Begin PBXFileReference section */
 		2B3A7370209BB4A8005722BB /* project.pbxproj */ = {isa = PBXFileReference; lastKnownFileType = text.pbxproject; name = project.pbxproj; path = energyUsage.xcodeproj/project.pbxproj; sourceTree = "<group>"; };
+		2B74C5FF20A8927A00CF70ED /* BitFlags.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BitFlags.hpp; sourceTree = "<group>"; };
+		2B74C60420A8930700CF70ED /* dropTheTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dropTheTable.cpp; sourceTree = "<group>"; };
+		2B74C60520A8930700CF70ED /* createTheTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = createTheTable.cpp; sourceTree = "<group>"; };
+		2B74C60920A894AC00CF70ED /* setupForMultiFit.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = setupForMultiFit.hpp; sourceTree = "<group>"; };
 		2B77FC35209BC3B300725B50 /* selectFromTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = selectFromTable.cpp; path = "../../c++Postgres/c++Postgres/selectFromTable.cpp"; sourceTree = "<group>"; };
 		2B77FC37209BC54B00725B50 /* AllocateWorkingVectors.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AllocateWorkingVectors.hpp; sourceTree = "<group>"; };
 		2B7B3F04209B7D15008FD482 /* energyUsage */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = energyUsage; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,9 +47,6 @@
 		2BCCC9F0209D310900F88139 /* julianToGregorian.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = julianToGregorian.hpp; sourceTree = "<group>"; };
 		2BCCC9F2209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = insertIBucketizedEnergyValuesIntoTable.cpp; sourceTree = "<group>"; };
 		2BCCC9F3209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = insertIBucketizedEnergyValuesIntoTable.hpp; sourceTree = "<group>"; };
-		2BCCC9F720A1F02100F88139 /* dropTheTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dropTheTable.cpp; sourceTree = "<group>"; };
-		2BCCC9F920A1F3D200F88139 /* createTheTable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = createTheTable.cpp; sourceTree = "<group>"; };
-		2BCCC9FC20A46E0100F88139 /* BitFlags.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BitFlags.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,18 +91,19 @@
 			children = (
 				2BCCC9F0209D310900F88139 /* julianToGregorian.hpp */,
 				2B7B3F15209B7D3B008FD482 /* helpFile.hpp */,
-				2BCCC9FC20A46E0100F88139 /* BitFlags.hpp */,
+				2B74C5FF20A8927A00CF70ED /* BitFlags.hpp */,
 				2B7B3F14209B7D3B008FD482 /* makeConnectionString.hpp */,
 				2B77FC37209BC54B00725B50 /* AllocateWorkingVectors.hpp */,
 				2B7B3F0E209B7D3A008FD482 /* myPrototypes.hpp */,
 				2B7B3F13209B7D3B008FD482 /* updateTable.hpp */,
 				2BCCC9EB209D29E900F88139 /* isItDayLightSavingsTime.h */,
 				2BCCC9F3209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.hpp */,
+				2B74C60920A894AC00CF70ED /* setupForMultiFit.hpp */,
 				2B7B3F10209B7D3A008FD482 /* main.cpp */,
 				2BCCC9F2209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp */,
 				2B77FC35209BC3B300725B50 /* selectFromTable.cpp */,
-				2BCCC9F720A1F02100F88139 /* dropTheTable.cpp */,
-				2BCCC9F920A1F3D200F88139 /* createTheTable.cpp */,
+				2B74C60520A8930700CF70ED /* createTheTable.cpp */,
+				2B74C60420A8930700CF70ED /* dropTheTable.cpp */,
 				2B7B3F17209B7D3B008FD482 /* message.cpp */,
 			);
 			path = energyUsage;
@@ -165,10 +167,10 @@
 			files = (
 				2B77FC36209BC3B300725B50 /* selectFromTable.cpp in Sources */,
 				2B7B3F19209B7D3C008FD482 /* main.cpp in Sources */,
-				2BCCC9FB20A1F3D200F88139 /* createTheTable.cpp in Sources */,
+				2B74C60720A8930700CF70ED /* createTheTable.cpp in Sources */,
 				2B7B3F1D209B7D3C008FD482 /* message.cpp in Sources */,
 				2BCCC9F4209E62B300F88139 /* insertIBucketizedEnergyValuesIntoTable.cpp in Sources */,
-				2BCCC9F820A1F02100F88139 /* dropTheTable.cpp in Sources */,
+				2B74C60620A8930700CF70ED /* dropTheTable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

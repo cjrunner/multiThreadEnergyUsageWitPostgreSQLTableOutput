@@ -9,6 +9,8 @@
 #ifndef BitFlags_hpp
 #define BitFlags_hpp
 typedef struct BitFlags {
+    size_t countOfGoodEntries;
+    size_t countOfBadEntries;
     const char *resultsFile;
     char *dependentVariableColumn;
     int    includeM2InAverages;
