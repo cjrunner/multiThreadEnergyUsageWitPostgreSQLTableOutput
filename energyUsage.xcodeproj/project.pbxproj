@@ -40,7 +40,6 @@
 		2B7B3F0E209B7D3A008FD482 /* myPrototypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = myPrototypes.hpp; path = "../../c++Postgres/c++Postgres/myPrototypes.hpp"; sourceTree = "<group>"; };
 		2B7B3F10209B7D3A008FD482 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = "../../c++Postgres/c++Postgres/main.cpp"; sourceTree = "<group>"; };
 		2B7B3F13209B7D3B008FD482 /* updateTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = updateTable.hpp; path = "../../c++Postgres/c++Postgres/updateTable.hpp"; sourceTree = "<group>"; };
-		2B7B3F14209B7D3B008FD482 /* makeConnectionString.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = makeConnectionString.hpp; path = "../../c++Postgres/c++Postgres/makeConnectionString.hpp"; sourceTree = "<group>"; };
 		2B7B3F15209B7D3B008FD482 /* helpFile.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = helpFile.hpp; path = "../../c++Postgres/c++Postgres/helpFile.hpp"; sourceTree = "<group>"; };
 		2B7B3F17209B7D3B008FD482 /* message.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = message.cpp; path = "../../c++Postgres/c++Postgres/message.cpp"; sourceTree = "<group>"; };
 		2BCCC9EB209D29E900F88139 /* isItDayLightSavingsTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = isItDayLightSavingsTime.h; path = ../../../C/PG/includes/isItDayLightSavingsTime.h; sourceTree = "<group>"; };
@@ -92,7 +91,6 @@
 				2BCCC9F0209D310900F88139 /* julianToGregorian.hpp */,
 				2B7B3F15209B7D3B008FD482 /* helpFile.hpp */,
 				2B74C5FF20A8927A00CF70ED /* BitFlags.hpp */,
-				2B7B3F14209B7D3B008FD482 /* makeConnectionString.hpp */,
 				2B77FC37209BC54B00725B50 /* AllocateWorkingVectors.hpp */,
 				2B7B3F0E209B7D3A008FD482 /* myPrototypes.hpp */,
 				2B7B3F13209B7D3B008FD482 /* updateTable.hpp */,
