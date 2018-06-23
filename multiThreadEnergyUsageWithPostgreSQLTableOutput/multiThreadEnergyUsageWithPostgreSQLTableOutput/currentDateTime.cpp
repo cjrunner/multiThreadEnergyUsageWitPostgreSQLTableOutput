@@ -7,7 +7,7 @@
 //  See https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
 //
 
-#include "baseClass.hpp" 
+
 #include "currentDateTime.hpp"
 
 // Get current date/time, format is YYYY-MM-DD.HH:mm:ss

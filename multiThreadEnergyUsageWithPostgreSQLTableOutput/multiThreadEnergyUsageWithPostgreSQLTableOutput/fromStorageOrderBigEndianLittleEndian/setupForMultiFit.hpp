@@ -60,8 +60,7 @@ public:
     gsl_vector *weights;
     gsl_vector *coefficients;
     int rc;
-    //Declaration of various member functions
-    SetupForMultiFit(bool);  //
+//Declaration of various member functions
     ~SetupForMultiFit();
     SetupForMultiFit(BaseClass *, size_t,  size_t, double *)  ;
     int doMultiFit(void) ;

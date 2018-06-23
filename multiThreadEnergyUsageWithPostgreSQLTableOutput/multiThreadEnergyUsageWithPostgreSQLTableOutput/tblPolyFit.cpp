@@ -14,8 +14,7 @@
 #include "tblPolyFit.hpp"
 #include "varyingType.hpp"
 // TblPolyFit::TblPolyFit(SetupForMultiFit *smf, const char *cs, int nv, int rsltFmt) {
-#ifdef DODEBUG
-TblPolyFit::TblPolyFit( short pd, int nv, int rsltFmt) : SetupForMultiFit(NOTINRUNMODE) {
+TblPolyFit::TblPolyFit(short pd, int nv, int rsltFmt, bool withCov)  {
 //      T E S T    M O D E       T E S T    M O D E       T E S T    M O D E       T E S T    M O D E
     pdegree = pd; //Set polynomial degree
     ptrSUMF = NULL; //Indicates constructed for test
@@ -25,8 +24,8 @@ TblPolyFit::TblPolyFit( short pd, int nv, int rsltFmt) : SetupForMultiFit(NOTINR
     resultFormat = rsltFmt;
     paramValues = new char [nv]{};
 //      T E S T    D A T A       T E S T    D A T A       T E S T    D A T A       T E S T    D A T A
-#ifdef DOTABLETBLPOLYFITWITHCOV   //Perhaps a command line flag (e.g., -c) could accomplish the same objective of \
-having code that will fill either tbl_poly_fit_with_cov or, its cousin of a simpler schema, tbl_poly_fit
+    if(withCov) {
+
     //For tbl_poly_fit_with_cov
     ptrCovNbo = new float[NUMBEROFCOVARIANCEMATRIXENTRIES ]{};  //Get another array, that mirrors the original array of covariance data, but this array will have the covariance data in NetworkByteOrder.
     VaryingType<float> *tfloat =new VaryingType<float>();  //This tfloat object, for type double, should serve us for making input parameters p2, p3, p4, p5, p7, and p8 in network byte order.
@@ -45,17 +44,19 @@ having code that will fill either tbl_poly_fit_with_cov or, its cousin of a simp
         INT2OID, FLOAT8OID, FLOAT8OID};
     paramLengths = new const  int[nv]{2,8,8,8,8, 4,4,4,4, 4,4,4,4, 4,4,4,4, 4,4,4,4,  2,8,8}; //One array of 4 doubles plus one array of consecutivie instances of 4 bytes
     paramFormats = new const int [nv]{1,1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1,  1,1,1};
-#else
+    } else {
+
     //For tbl_poly_fit
     paramTypes = new const Oid[nv]{INT2OID,FLOAT8OID, FLOAT8OID, FLOAT8OID, FLOAT8OID, INT2OID, FLOAT8OID, FLOAT8OID};
     paramLengths = new const  int[nv]{2,8,8,8,8,   2,8,8}; //One array of 4 doubles plus one array of consecutivie instances of 4 bytes
     paramFormats = new const int [nv]{1,1,1,1,1,   1,1,1};
     /**/
-#endif /*  DOTABLETBLPOLYFITWITHCOV  */
+    }
+
 //      T E S T    D A T A       T E S T    D A T A       T E S T    D A T A       T E S T    D A T A
 }
-#else
-TblPolyFit::TblPolyFit(SetupForMultiFit *sumf, short pd, int nv, int rsltFmt) {  
+
+TblPolyFit::TblPolyFit(SetupForMultiFit *sumf, short pd, int nv, int rsltFmt, bool withCov) {
 //      R U N    M O D E       R U N    M O D E       R U N    M O D E       R U N    M O D E
     pdegree = pd; //Set polynomial degree
     ptrSUMF = sumf; //Save this because sumf is a friend class of ours.
@@ -74,13 +75,12 @@ TblPolyFit::TblPolyFit(SetupForMultiFit *sumf, short pd, int nv, int rsltFmt) {
     //connString = cs;
     nParams = nv;
     resultFormat = rsltFmt;
-    paramValues = new const char * const [nv]{};
+    paramValues = new const char [nv]{};
     paramTypes = new const Oid[nv]{INT2OID,FLOAT8OID, FLOAT8OID, FLOAT8OID, FLOAT8OID, FLOAT4ARRAYOID, INT2OID, FLOAT8OID, FLOAT8OID};
     paramLengths = new const  int[nv]{2,8,8,8,8, 16*4, 2,8,8};
     paramFormats = new const int [nv]{1,1,1,1,1,   1,  1,1,1};
     /**/
 }
-#endif /* DODEBUG */
 TblPolyFit::~TblPolyFit() {
     #ifdef DOTABLETBLPOLYFITWITHCOV
     if(ptrSUMF == NULL) delete [] ptrCov;  //Only in test mode do we allocate ptrCov, so now we must delete it because ptrSUMF == NULL => test mode.

@@ -38,7 +38,7 @@ typedef struct ll64 {
     } u64;
 } ll64;
 
-class TblPolyFit : public SetupForMultiFit  { //Note that SetupForMultiFit gets called before TblPolyFit.
+class TblPolyFit  { //Note that SetupForMultiFit gets called before TblPolyFit.
 private:
     short pdegree;
     const char *connString = "dbname=LocalWeather port=5436 user=cjc password=apple";  //Connection String goes here.
@@ -75,16 +75,7 @@ Indexes:
     const char *insertIntoCov =  "INSERT INTO tbl_poly_fit_with_cov (lt,pd, coeff, cov,  kind, correl, chi2) VALUES(now(), $1, \
     ARRAY[$2,$3,$4,$5],  \
     ARRAY[[$6,$7,$8,$9], [$10, $11, $12, $13], [$14, $15, $16, $17], [$18, $19, $20, $21]], \
-    $22, $23, $24) " ; //Arrays of doubles (aka, float8s) have an object id of 1022 per  /Users/cjc/C/postgres10/postgresql-10.1/postgresql-10.1/tmp_install/usr/local/pgsql/pgsql101/include/server/catalog/pg_type.h. \
-    Arrays of float4s have an object id of 1021, per op cit.
-//  THIS WORKED    const char *insertIntoCov =  "INSERT INTO tbl_poly_fit_with_cov (lt,pd, coeff,  kind, correl, chi2) VALUES(now(), $1, ARRAY[$2,$3,$4,$5], $6, $7, $8) " ; //Arrays of doubles (aka, float8s) have an object id of 1022 per  /Users/cjc/C/postgres10/postgresql-10.1/postgresql-10.1/tmp_install/usr/local/pgsql/pgsql101/include/server/catalog/pg_type.h. \
-    Arrays of float4s have an object id of 1021, per op cit.
-//    const char *insertIntoCov =  "INSERT INTO tbl_poly_fit_with_cov (lt,pd, coeff,  kind, correl, chi2) VALUES(now(), $1, ARRAY[$2], $3, $4, $5) " ; //Arrays of doubles (aka, float8s) have an object id of 1022 per  /Users/cjc/C/postgres10/postgresql-10.1/postgresql-10.1/tmp_install/usr/local/pgsql/pgsql101/include/server/catalog/pg_type.h. \
-    Arrays of float4s have an object id of 1021, per op cit.
-//    const char *insertIntoCov =  "INSERT INTO tbl_poly_fit_with_cov (lt,pd, coeff, cov, kind, correl, chi2) VALUES(now(), $1, ARRAY[$2], ARRAY[[$3],[$4],[$5],[$6]], $7, $8, $9) " ; //Arrays of doubles (aka, float8s) have an object id of 1022 per  /Users/cjc/C/postgres10/postgresql-10.1/postgresql-10.1/tmp_install/usr/local/pgsql/pgsql101/include/server/catalog/pg_type.h. \
-    Arrays of float4s have an object id of 1021, per op cit.
-//    const char *insertIntoCov =  "INSERT INTO tbl_poly_fit_with_cov (lt,pd, coeff, cov, kind, correl, chi2) VALUES(now(), $1, $2, $3, $4, $5, '{{$6, $7, $8, $9}, {$10, $11, $12, $13}, {$14, $15, $16, $17}, {$18, $19, $20, $21}}', $22, $23, $24) " ; //Arrays of doubles (aka, float8s) have an object id of 1022 per  /Users/cjc/C/postgres10/postgresql-10.1/postgresql-10.1/tmp_install/usr/local/pgsql/pgsql101/include/server/catalog/pg_type.h. \
-    Arrays of float4s have an object id of 1021, per op cit.
+    $22, $23, $24) " ; //Arrays of doubles (aka, float8s) have an object id of 1022 per  /Users/cjc/C/postgres10/postgresql-10.1/postgresql-10.1/
 public:
     SetupForMultiFit *ptrSUMF;
     float intermediateValue[NUMBEROFCOVMX];
@@ -111,8 +102,8 @@ public:
 
 
     int  resultFormat; //Specify 0 to obtain results in text format; specify 1 to obtain results in binary format.
-TblPolyFit(short, int=NUMBEROFPARAMETERS, int=TEXTRESULTS); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storageTblPolyFit(SetupForMultiFit *,  int=NUMBEROFPARAMETERS, int=TEXTRESULTS); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storage
-TblPolyFit(SetupForMultiFit *, short, int=NUMBEROFPARAMETERS, int=TEXTRESULTS); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storageTblPolyFit(SetupForMultiFit *,  int=NUMBEROFPARAMETERS, int=TEXTRESULTS); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storage
+TblPolyFit(short, int=NUMBEROFPARAMETERS, int=TEXTRESULTS, bool=true); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storageTblPolyFit(SetupForMultiFit *,  int=NUMBEROFPARAMETERS, int=TEXTRESULTS); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storage
+TblPolyFit(SetupForMultiFit *, short, int=NUMBEROFPARAMETERS, int=TEXTRESULTS, bool=true); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storageTblPolyFit(SetupForMultiFit *,  int=NUMBEROFPARAMETERS, int=TEXTRESULTS); //This constructor takes the third (right-most) parameter and uses it to set the value of nParams and then dynamically allocate storage
 ~TblPolyFit();  //Needs to delete the four dynamic storage objects  allocated by the above constructor.
 int doInsertInto(const char *, short *, double *, double *, double *, double *, short *, double *, double *);
 int doInsertInto(SetupForMultiFit *, short *, double *, double *, double *, double *, float *, short *, double *, double *);

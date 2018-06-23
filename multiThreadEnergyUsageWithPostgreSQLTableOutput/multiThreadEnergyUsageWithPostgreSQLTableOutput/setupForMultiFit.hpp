@@ -34,11 +34,9 @@ private:
     size_t numberOfEntries;  // From count
     const double *arrayOfValues; //Pointer to array of current values, per enum, above, bucketColNames
     size_t &maxNumberOfRows = numberOfEntries;  // Use a c++-type reference rather than a C-type pointer.
-
     
 public:
-//    BaseClass *bc;
-    void *bc;
+    BaseClass *bc;
     size_t onePlusPolynomialDegree;
     const  double initialValue = 1;
     double dblwork;
@@ -63,8 +61,7 @@ public:
     int rc;
     //Declaration of various member functions
     ~SetupForMultiFit();
-//    SetupForMultiFit(BaseClass *, size_t,  size_t, double *)  ;
-    SetupForMultiFit(void *, size_t,  size_t, double *)  ;
+    SetupForMultiFit(BaseClass *, size_t,  size_t, double *)  ;
     int doMultiFit(void) ;
     
     void  setIntoMatrix(gsl_matrix *, int, int, double);
@@ -83,10 +80,10 @@ public:
     
     double computeTrace(double *, int);
     
-//    double  computeCorrelationBetweenIndependentAndDependentVariables(BaseClass *);
-    double  computeCorrelationBetweenIndependentAndDependentVariables(void  *);
-//    double computeGoodnessOfResults (BaseClass *);
-    double computeGoodnessOfResults (void *);
+    double  computeCorrelationBetweenIndependentAndDependentVariables(BaseClass *);
+    
+    double computeGoodnessOfResults (BaseClass *);
+    
     double getCoefficient(int );
     
     double getChi2(void);

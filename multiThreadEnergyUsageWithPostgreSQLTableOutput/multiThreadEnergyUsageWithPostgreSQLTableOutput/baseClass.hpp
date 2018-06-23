@@ -155,7 +155,7 @@ public:
     void allocateArrays(size_t);
     char *sqlI; //Need to do const char *sql rather than just char *sql to make the C++11 compiler happy.
     //Prototypes
-    BaseClass(int);
+// WHY DO WE NEED THIS?    BaseClass(int);
     BaseClass(CmdLineArgs *,  const char = '0', const char * = "cjc", const char * = "LocalWeather", const char * = "5436", const char * = "127.0.0.1", const size_t = MAXNUMBEROFAVGTEMPS );
     const char *getPrivate(CmdLineArgs &,char);
     ~BaseClass();
