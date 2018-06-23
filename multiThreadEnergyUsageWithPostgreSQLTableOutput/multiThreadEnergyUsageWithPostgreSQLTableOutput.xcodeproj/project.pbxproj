@@ -1,0 +1,457 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2BE9482B20DECF6D00A171F6 /* executeSQL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9480920DECF6800A171F6 /* executeSQL.cpp */; };
+		2BE9482C20DECF6D00A171F6 /* endTransaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9480A20DECF6900A171F6 /* endTransaction.cpp */; };
+		2BE9482D20DECF6D00A171F6 /* makeHelpMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9480B20DECF6900A171F6 /* makeHelpMessage.cpp */; };
+		2BE9482E20DECF6D00A171F6 /* closePortal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9480D20DECF6900A171F6 /* closePortal.cpp */; };
+		2BE9482F20DECF6D00A171F6 /* StopWatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9480E20DECF6900A171F6 /* StopWatch.cpp */; };
+		2BE9483020DECF6D00A171F6 /* tblPolyFit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9480F20DECF6900A171F6 /* tblPolyFit.cpp */; };
+		2BE9483120DECF6D00A171F6 /* effectConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481020DECF6900A171F6 /* effectConnection.cpp */; };
+		2BE9483220DECF6D00A171F6 /* insertBucketizedEnergyValuesIntoTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481120DECF6900A171F6 /* insertBucketizedEnergyValuesIntoTable.cpp */; };
+		2BE9483320DECF6D00A171F6 /* setupForMultiFit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481220DECF6900A171F6 /* setupForMultiFit.cpp */; };
+		2BE9483420DECF6D00A171F6 /* baseClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481320DECF6900A171F6 /* baseClass.cpp */; };
+		2BE9483520DECF6D00A171F6 /* fetchAllTransaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481420DECF6A00A171F6 /* fetchAllTransaction.cpp */; };
+		2BE9483620DECF6D00A171F6 /* message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481A20DECF6A00A171F6 /* message.cpp */; };
+		2BE9483720DECF6D00A171F6 /* initialize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481B20DECF6A00A171F6 /* initialize.cpp */; };
+		2BE9483820DECF6D00A171F6 /* dropTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481D20DECF6B00A171F6 /* dropTheTable.cpp */; };
+		2BE9483920DECF6D00A171F6 /* selectFromTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9481E20DECF6B00A171F6 /* selectFromTable.cpp */; };
+		2BE9483A20DECF6D00A171F6 /* varyingType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9482120DECF6B00A171F6 /* varyingType.cpp */; };
+		2BE9483B20DECF6D00A171F6 /* currentDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9482220DECF6C00A171F6 /* currentDateTime.cpp */; };
+		2BE9483C20DECF6D00A171F6 /* beginTransaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9482320DECF6C00A171F6 /* beginTransaction.cpp */; };
+		2BE9483D20DECF6D00A171F6 /* createTheTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9482520DECF6C00A171F6 /* createTheTable.cpp */; };
+		2BE9483E20DECF6D00A171F6 /* alignField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9482720DECF6C00A171F6 /* alignField.cpp */; };
+		2BE9483F20DECF6D00A171F6 /* cmdLineArgs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9482920DECF6D00A171F6 /* cmdLineArgs.cpp */; };
+		2BE9485020DED00900A171F6 /* setupForMultiFit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9484920DED00800A171F6 /* setupForMultiFit.cpp */; };
+		2BE9485120DED00900A171F6 /* currentDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9484A20DED00800A171F6 /* currentDateTime.cpp */; };
+		2BE9485220DED00900A171F6 /* tblPolyFit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9484D20DED00900A171F6 /* tblPolyFit.cpp */; };
+		2BE9485320DED00900A171F6 /* varyingType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9484E20DED00900A171F6 /* varyingType.cpp */; };
+		2BE9485620DED1DD00A171F6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE9485520DED1DD00A171F6 /* main.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B712CE320DEBE6D00E81D1A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2B712CE520DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = multiThreadEnergyUsageWithPostgreSQLTableOutput; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BE9480520DECF6800A171F6 /* AllocateWorkingVectors.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AllocateWorkingVectors.hpp; sourceTree = "<group>"; };
+		2BE9480620DECF6800A171F6 /* makeHelpMessage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = makeHelpMessage.hpp; sourceTree = "<group>"; };
+		2BE9480720DECF6800A171F6 /* pgtypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pgtypes.hpp; sourceTree = "<group>"; };
+		2BE9480820DECF6800A171F6 /* varyingType.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = varyingType.hpp; sourceTree = "<group>"; };
+		2BE9480920DECF6800A171F6 /* executeSQL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = executeSQL.cpp; sourceTree = "<group>"; };
+		2BE9480A20DECF6900A171F6 /* endTransaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = endTransaction.cpp; sourceTree = "<group>"; };
+		2BE9480B20DECF6900A171F6 /* makeHelpMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = makeHelpMessage.cpp; sourceTree = "<group>"; };
+		2BE9480C20DECF6900A171F6 /* insertIBucketizedEnergyValuesIntoTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = insertIBucketizedEnergyValuesIntoTable.hpp; sourceTree = "<group>"; };
+		2BE9480D20DECF6900A171F6 /* closePortal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = closePortal.cpp; sourceTree = "<group>"; };
+		2BE9480E20DECF6900A171F6 /* StopWatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StopWatch.cpp; sourceTree = "<group>"; };
+		2BE9480F20DECF6900A171F6 /* tblPolyFit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tblPolyFit.cpp; sourceTree = "<group>"; };
+		2BE9481020DECF6900A171F6 /* effectConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = effectConnection.cpp; sourceTree = "<group>"; };
+		2BE9481120DECF6900A171F6 /* insertBucketizedEnergyValuesIntoTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = insertBucketizedEnergyValuesIntoTable.cpp; sourceTree = "<group>"; };
+		2BE9481220DECF6900A171F6 /* setupForMultiFit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = setupForMultiFit.cpp; sourceTree = "<group>"; };
+		2BE9481320DECF6900A171F6 /* baseClass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = baseClass.cpp; sourceTree = "<group>"; };
+		2BE9481420DECF6A00A171F6 /* fetchAllTransaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fetchAllTransaction.cpp; sourceTree = "<group>"; };
+		2BE9481520DECF6A00A171F6 /* tblPolyFit.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tblPolyFit.hpp; sourceTree = "<group>"; };
+		2BE9481620DECF6A00A171F6 /* baseClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = baseClass.hpp; sourceTree = "<group>"; };
+		2BE9481720DECF6A00A171F6 /* currentDateTime.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = currentDateTime.hpp; sourceTree = "<group>"; };
+		2BE9481820DECF6A00A171F6 /* isItDayLightSavingsTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = isItDayLightSavingsTime.h; sourceTree = "<group>"; };
+		2BE9481920DECF6A00A171F6 /* BitFlags.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BitFlags.hpp; sourceTree = "<group>"; };
+		2BE9481A20DECF6A00A171F6 /* message.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = message.cpp; sourceTree = "<group>"; };
+		2BE9481B20DECF6A00A171F6 /* initialize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = initialize.cpp; sourceTree = "<group>"; };
+		2BE9481C20DECF6B00A171F6 /* alignField.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = alignField.hpp; sourceTree = "<group>"; };
+		2BE9481D20DECF6B00A171F6 /* dropTheTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dropTheTable.cpp; sourceTree = "<group>"; };
+		2BE9481E20DECF6B00A171F6 /* selectFromTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = selectFromTable.cpp; sourceTree = "<group>"; };
+		2BE9481F20DECF6B00A171F6 /* myPrototypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myPrototypes.hpp; sourceTree = "<group>"; };
+		2BE9482020DECF6B00A171F6 /* setupForMultiFit.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = setupForMultiFit.hpp; sourceTree = "<group>"; };
+		2BE9482120DECF6B00A171F6 /* varyingType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = varyingType.cpp; sourceTree = "<group>"; };
+		2BE9482220DECF6C00A171F6 /* currentDateTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = currentDateTime.cpp; sourceTree = "<group>"; };
+		2BE9482320DECF6C00A171F6 /* beginTransaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = beginTransaction.cpp; sourceTree = "<group>"; };
+		2BE9482420DECF6C00A171F6 /* cmdLineArgs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cmdLineArgs.hpp; sourceTree = "<group>"; };
+		2BE9482520DECF6C00A171F6 /* createTheTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = createTheTable.cpp; sourceTree = "<group>"; };
+		2BE9482620DECF6C00A171F6 /* effectConnection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = effectConnection.hpp; sourceTree = "<group>"; };
+		2BE9482720DECF6C00A171F6 /* alignField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = alignField.cpp; sourceTree = "<group>"; };
+		2BE9482820DECF6D00A171F6 /* StopWatch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StopWatch.hpp; sourceTree = "<group>"; };
+		2BE9482920DECF6D00A171F6 /* cmdLineArgs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cmdLineArgs.cpp; sourceTree = "<group>"; };
+		2BE9482A20DECF6D00A171F6 /* updateTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = updateTable.hpp; sourceTree = "<group>"; };
+		2BE9484120DED00700A171F6 /* cmdLineArgs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cmdLineArgs.hpp; sourceTree = "<group>"; };
+		2BE9484220DED00700A171F6 /* BitFlags.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BitFlags.hpp; sourceTree = "<group>"; };
+		2BE9484420DED00800A171F6 /* baseClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = baseClass.hpp; sourceTree = "<group>"; };
+		2BE9484520DED00800A171F6 /* varyingType.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = varyingType.hpp; sourceTree = "<group>"; };
+		2BE9484620DED00800A171F6 /* tblPolyFit.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tblPolyFit.hpp; sourceTree = "<group>"; };
+		2BE9484720DED00800A171F6 /* alignField.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = alignField.hpp; sourceTree = "<group>"; };
+		2BE9484820DED00800A171F6 /* currentDateTime.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = currentDateTime.hpp; sourceTree = "<group>"; };
+		2BE9484920DED00800A171F6 /* setupForMultiFit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = setupForMultiFit.cpp; sourceTree = "<group>"; };
+		2BE9484A20DED00800A171F6 /* currentDateTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = currentDateTime.cpp; sourceTree = "<group>"; };
+		2BE9484B20DED00800A171F6 /* myPrototypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myPrototypes.hpp; sourceTree = "<group>"; };
+		2BE9484C20DED00800A171F6 /* setupForMultiFit.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = setupForMultiFit.hpp; sourceTree = "<group>"; };
+		2BE9484D20DED00900A171F6 /* tblPolyFit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tblPolyFit.cpp; sourceTree = "<group>"; };
+		2BE9484E20DED00900A171F6 /* varyingType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = varyingType.cpp; sourceTree = "<group>"; };
+		2BE9485520DED1DD00A171F6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B712CE220DEBE6D00E81D1A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B712CDC20DEBE6D00E81D1A = {
+			isa = PBXGroup;
+			children = (
+				2B712CE720DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */,
+				2B712CE620DEBE6D00E81D1A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B712CE620DEBE6D00E81D1A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B712CE520DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B712CE720DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */ = {
+			isa = PBXGroup;
+			children = (
+				2BE9485520DED1DD00A171F6 /* main.cpp */,
+				2BE9485420DED02500A171F6 /* fromMultiThreadEnergyUsage */,
+				2BE9484020DECFAE00A171F6 /* fromStorageOrderBigEndianLittleEndian */,
+			);
+			path = multiThreadEnergyUsageWithPostgreSQLTableOutput;
+			sourceTree = "<group>";
+		};
+		2BE9484020DECFAE00A171F6 /* fromStorageOrderBigEndianLittleEndian */ = {
+			isa = PBXGroup;
+			children = (
+				2BE9484720DED00800A171F6 /* alignField.hpp */,
+				2BE9484420DED00800A171F6 /* baseClass.hpp */,
+				2BE9484220DED00700A171F6 /* BitFlags.hpp */,
+				2BE9484120DED00700A171F6 /* cmdLineArgs.hpp */,
+				2BE9484A20DED00800A171F6 /* currentDateTime.cpp */,
+				2BE9484820DED00800A171F6 /* currentDateTime.hpp */,
+				2BE9484B20DED00800A171F6 /* myPrototypes.hpp */,
+				2BE9484920DED00800A171F6 /* setupForMultiFit.cpp */,
+				2BE9484C20DED00800A171F6 /* setupForMultiFit.hpp */,
+				2BE9484D20DED00900A171F6 /* tblPolyFit.cpp */,
+				2BE9484620DED00800A171F6 /* tblPolyFit.hpp */,
+				2BE9484E20DED00900A171F6 /* varyingType.cpp */,
+				2BE9484520DED00800A171F6 /* varyingType.hpp */,
+			);
+			path = fromStorageOrderBigEndianLittleEndian;
+			sourceTree = "<group>";
+		};
+		2BE9485420DED02500A171F6 /* fromMultiThreadEnergyUsage */ = {
+			isa = PBXGroup;
+			children = (
+				2BE9482720DECF6C00A171F6 /* alignField.cpp */,
+				2BE9481C20DECF6B00A171F6 /* alignField.hpp */,
+				2BE9480520DECF6800A171F6 /* AllocateWorkingVectors.hpp */,
+				2BE9481320DECF6900A171F6 /* baseClass.cpp */,
+				2BE9481620DECF6A00A171F6 /* baseClass.hpp */,
+				2BE9482320DECF6C00A171F6 /* beginTransaction.cpp */,
+				2BE9481920DECF6A00A171F6 /* BitFlags.hpp */,
+				2BE9480D20DECF6900A171F6 /* closePortal.cpp */,
+				2BE9482920DECF6D00A171F6 /* cmdLineArgs.cpp */,
+				2BE9482420DECF6C00A171F6 /* cmdLineArgs.hpp */,
+				2BE9482520DECF6C00A171F6 /* createTheTable.cpp */,
+				2BE9482220DECF6C00A171F6 /* currentDateTime.cpp */,
+				2BE9481720DECF6A00A171F6 /* currentDateTime.hpp */,
+				2BE9481D20DECF6B00A171F6 /* dropTheTable.cpp */,
+				2BE9481020DECF6900A171F6 /* effectConnection.cpp */,
+				2BE9482620DECF6C00A171F6 /* effectConnection.hpp */,
+				2BE9480A20DECF6900A171F6 /* endTransaction.cpp */,
+				2BE9480920DECF6800A171F6 /* executeSQL.cpp */,
+				2BE9481420DECF6A00A171F6 /* fetchAllTransaction.cpp */,
+				2BE9481B20DECF6A00A171F6 /* initialize.cpp */,
+				2BE9481120DECF6900A171F6 /* insertBucketizedEnergyValuesIntoTable.cpp */,
+				2BE9480C20DECF6900A171F6 /* insertIBucketizedEnergyValuesIntoTable.hpp */,
+				2BE9481820DECF6A00A171F6 /* isItDayLightSavingsTime.h */,
+				2BE9480B20DECF6900A171F6 /* makeHelpMessage.cpp */,
+				2BE9480620DECF6800A171F6 /* makeHelpMessage.hpp */,
+				2BE9481A20DECF6A00A171F6 /* message.cpp */,
+				2BE9481F20DECF6B00A171F6 /* myPrototypes.hpp */,
+				2BE9480720DECF6800A171F6 /* pgtypes.hpp */,
+				2BE9481E20DECF6B00A171F6 /* selectFromTable.cpp */,
+				2BE9481220DECF6900A171F6 /* setupForMultiFit.cpp */,
+				2BE9482020DECF6B00A171F6 /* setupForMultiFit.hpp */,
+				2BE9480E20DECF6900A171F6 /* StopWatch.cpp */,
+				2BE9482820DECF6D00A171F6 /* StopWatch.hpp */,
+				2BE9480F20DECF6900A171F6 /* tblPolyFit.cpp */,
+				2BE9481520DECF6A00A171F6 /* tblPolyFit.hpp */,
+				2BE9482A20DECF6D00A171F6 /* updateTable.hpp */,
+				2BE9482120DECF6B00A171F6 /* varyingType.cpp */,
+				2BE9480820DECF6800A171F6 /* varyingType.hpp */,
+			);
+			path = fromMultiThreadEnergyUsage;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B712CE420DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B712CEC20DEBE6D00E81D1A /* Build configuration list for PBXNativeTarget "multiThreadEnergyUsageWithPostgreSQLTableOutput" */;
+			buildPhases = (
+				2B712CE120DEBE6D00E81D1A /* Sources */,
+				2B712CE220DEBE6D00E81D1A /* Frameworks */,
+				2B712CE320DEBE6D00E81D1A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = multiThreadEnergyUsageWithPostgreSQLTableOutput;
+			productName = multiThreadEnergyUsageWithPostgreSQLTableOutput;
+			productReference = 2B712CE520DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B712CDD20DEBE6D00E81D1A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0940;
+				ORGANIZATIONNAME = CliffordCampo;
+				TargetAttributes = {
+					2B712CE420DEBE6D00E81D1A = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+				};
+			};
+			buildConfigurationList = 2B712CE020DEBE6D00E81D1A /* Build configuration list for PBXProject "multiThreadEnergyUsageWithPostgreSQLTableOutput" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2B712CDC20DEBE6D00E81D1A;
+			productRefGroup = 2B712CE620DEBE6D00E81D1A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B712CE420DEBE6D00E81D1A /* multiThreadEnergyUsageWithPostgreSQLTableOutput */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B712CE120DEBE6D00E81D1A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2BE9483A20DECF6D00A171F6 /* varyingType.cpp in Sources */,
+				2BE9485120DED00900A171F6 /* currentDateTime.cpp in Sources */,
+				2BE9483920DECF6D00A171F6 /* selectFromTable.cpp in Sources */,
+				2BE9482D20DECF6D00A171F6 /* makeHelpMessage.cpp in Sources */,
+				2BE9483620DECF6D00A171F6 /* message.cpp in Sources */,
+				2BE9483420DECF6D00A171F6 /* baseClass.cpp in Sources */,
+				2BE9482F20DECF6D00A171F6 /* StopWatch.cpp in Sources */,
+				2BE9483120DECF6D00A171F6 /* effectConnection.cpp in Sources */,
+				2BE9483F20DECF6D00A171F6 /* cmdLineArgs.cpp in Sources */,
+				2BE9483220DECF6D00A171F6 /* insertBucketizedEnergyValuesIntoTable.cpp in Sources */,
+				2BE9483E20DECF6D00A171F6 /* alignField.cpp in Sources */,
+				2BE9485220DED00900A171F6 /* tblPolyFit.cpp in Sources */,
+				2BE9482E20DECF6D00A171F6 /* closePortal.cpp in Sources */,
+				2BE9482C20DECF6D00A171F6 /* endTransaction.cpp in Sources */,
+				2BE9483820DECF6D00A171F6 /* dropTheTable.cpp in Sources */,
+				2BE9482B20DECF6D00A171F6 /* executeSQL.cpp in Sources */,
+				2BE9483D20DECF6D00A171F6 /* createTheTable.cpp in Sources */,
+				2BE9485620DED1DD00A171F6 /* main.cpp in Sources */,
+				2BE9483B20DECF6D00A171F6 /* currentDateTime.cpp in Sources */,
+				2BE9483320DECF6D00A171F6 /* setupForMultiFit.cpp in Sources */,
+				2BE9483520DECF6D00A171F6 /* fetchAllTransaction.cpp in Sources */,
+				2BE9485320DED00900A171F6 /* varyingType.cpp in Sources */,
+				2BE9485020DED00900A171F6 /* setupForMultiFit.cpp in Sources */,
+				2BE9483720DECF6D00A171F6 /* initialize.cpp in Sources */,
+				2BE9483020DECF6D00A171F6 /* tblPolyFit.cpp in Sources */,
+				2BE9483C20DECF6D00A171F6 /* beginTransaction.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2B712CEA20DEBE6D00E81D1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2B712CEB20DEBE6D00E81D1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2B712CED20DEBE6D00E81D1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				"HEADER_SEARCH_PATHS[arch=*]" = /usr/local/include;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /usr/local/lib;
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = (
+					"$(OTHER_CFLAGS)",
+					"-D",
+					DOTABLETBLPOLYFITWITHCOV,
+				);
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-lpq",
+					"-lgsl",
+					"-lpqxx",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2B712CEE20DEBE6D00E81D1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B712CE020DEBE6D00E81D1A /* Build configuration list for PBXProject "multiThreadEnergyUsageWithPostgreSQLTableOutput" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B712CEA20DEBE6D00E81D1A /* Debug */,
+				2B712CEB20DEBE6D00E81D1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B712CEC20DEBE6D00E81D1A /* Build configuration list for PBXNativeTarget "multiThreadEnergyUsageWithPostgreSQLTableOutput" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B712CED20DEBE6D00E81D1A /* Debug */,
+				2B712CEE20DEBE6D00E81D1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B712CDD20DEBE6D00E81D1A /* Project object */;
+}
