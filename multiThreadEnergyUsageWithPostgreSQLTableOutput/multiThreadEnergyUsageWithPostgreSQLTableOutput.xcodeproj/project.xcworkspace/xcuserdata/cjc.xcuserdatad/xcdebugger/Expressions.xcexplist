@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "fetchAllTransaction(BaseClass*, char const*, bool):fetchAllTransaction.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "insertBucketizedEnergyValuesIntoTable(double, double, double, double, double, int, BaseClass*):insertBucketizedEnergyValuesIntoTable.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "TblPolyFitWithCov::TblPolyFitWithCov(BaseClass*, int, int):TblPolyFitWithCov.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "(const Oid *)this-&gt;paramTypes">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "beginTransaction(BaseClass*, char const*, bool):beginTransaction.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "createTheTable(BaseClass*, char const*, bool):createTheTable.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "executeSQL(BaseClass*, char const*, bool):executeSQL.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "selectFromTable(BaseClass*, int):selectFromTable.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "BaseClass::BaseClass(CmdLineArgs*, char, char const*, char const*, char const*, char const*, unsigned long):baseClass.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "closePortal(BaseClass*, char const*, bool):closePortal.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

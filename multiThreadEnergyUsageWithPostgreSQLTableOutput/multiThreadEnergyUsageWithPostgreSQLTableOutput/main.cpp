@@ -17,13 +17,14 @@
 #include <thread>
 #include <stdio.h>
 #include <string.h>
-#include "cmdLIneArgs.hpp"
+#include "cmdLineArgs.hpp"
 #include "makeHelpMessage.hpp"
 #include "baseClass.hpp" 
 #include "effectConnection.hpp"
 #include "myPrototypes.hpp"
 #include "alignField.hpp"
 #include "StopWatch.hpp"
+#include "myPrototypes.hpp"
 //#include "getMCS.hpp"
 using namespace std;
 extern const short numberOfThreads;
@@ -36,6 +37,7 @@ extern const char *help_Message_Array[];
 extern const int numberOfEntries;
 extern const char *cases[];
 extern const char *dependentVariableColumn[];
+std::ostringstream *current_Date_Time(BaseClass *);
 void initializeBaseClass (BaseClass *, BaseClass *);
 int selectFromTable(register BaseClass *, int);
 const std::string currentDateTime(BaseClass *);
@@ -55,8 +57,16 @@ const struct option longopts[] =
     {"debug3", no_argument, 0, '3'},
     {0,0,0,0}, //End of array
 };
+PGconn *mycon;
+PGresult *myres;
 int main(int argc, char* argv[])  {
-    bool thread=false;
+    StopWatch *ptrSWmain[numberOfThreads+1];
+    ptrSWmain[M2KWHCASE+1] = new StopWatch(); //This is used for timing the whole job, except for the above instructions
+    ptrSWmain[M1KWHCASE] = new StopWatch();
+    ptrSWmain[M2KWHCASE] = new StopWatch();
+    ptrSWmain[M1M2KWHCASE] = new StopWatch();
+
+    bool thread=false;  //Assume we wish to default to the multi-thread case.
     std::ofstream outfile;
     std::thread threads[MAINCASE];  //will create array of three threads
     auto startTest = std::chrono::high_resolution_clock::now();
@@ -68,12 +78,8 @@ int main(int argc, char* argv[])  {
     Then subtracting 1 from the result accounts for the {0,0,0,0} end of array indicator, thus giving us the number of possible command line arguments.
     CmdLineArgs *ptrCLA = new CmdLineArgs(thread, (-1 + ( (sizeof(longopts)) >> 5) )); //Instantiate a class named CmdLineArgs. \
     It is here where we define the default values and the real-time values of the command line arguments.
+
     BaseClass *ptrbc = new BaseClass( ptrCLA, MAIN); //Allocate main.cpp's BaseClass
- 
-    StopWatch *ptrSWmain[numberOfThreads];
-    ptrSWmain[M1KWHCASE] = new StopWatch();
-    ptrSWmain[M2KWHCASE] = new StopWatch();
-    ptrSWmain[M1M2KWHCASE] = new StopWatch();
   
     const char *const commandLineSwitches = "123hktD:U:P:H:S:f:";
     int index;
@@ -147,12 +153,16 @@ int main(int argc, char* argv[])  {
                 break;
         } //End of switch
     }  //End of While
+    try {
     outfile.open(ptrCLA->_results_File, std::ios::out | std::ios::app) ; //open results file for appending
-    if (outfile.fail()) {
-        throw std::ios_base::failure(std::strerror(errno)) ;
-    } else {
-        //make sure write fails with exception if something is wrong
-        outfile.exceptions(outfile.exceptions() | std::ios::failbit | std::ifstream::badbit);
+    }
+    catch (...)
+    {
+          //  throw std::ios_base::failure(std::strerror(errno)) ;
+        
+            //make sure write fails with exception if something is wrong
+            outfile.exceptions(outfile.exceptions() | std::ios::failbit | std::ifstream::badbit);
+       
     }
     char connectionString[MAXBUFSIZE];
     char *ptrConnectionStringBuffer = connectionString;
@@ -166,23 +176,24 @@ int main(int argc, char* argv[])  {
     
     //    PGconn *conn = ecs->connectToDataBase(ptrConnectionStringBuffer);  /* << =================================== */
     BaseClass *const ptrbc1 = new BaseClass( ptrCLA, M1KWH);  //Immutable pointer
+ 
     for (int i=0; i < WORKBUFSIZE; i++) *(ptrbc1->connectionString + i) = *(connectionString + i);
     ptrbc1->debugFlags.mycase = M1KWH;
 //    ptrbc1->setConString(ptrConnectionStringBuffer);
-//    ptrbc1->lookAtMyConnectionString = ptrConnectionStringBuffer;
+    ptrbc1->lookAtMyConnectionString = ptrConnectionStringBuffer;
     ptrbc1->BFS = *(motherOfAllSelectStatements + M1KWHCASE );
     ptrbc1->results_File = defalutResultsFileName[M1KWHCASE];
     ptrbc1->debugFlags.intMyCase = M1KWHCASE;
     ptrbc1->debugFlags.debug2 = ptrCLA->_debug2;
     ptrbc1->debugFlags.debug3 = ptrCLA->_debug3;
     std::ostringstream os1;
-    ptrbc1->outstring = &os1;
+    ptrbc1->outstring = &os1; 
     
 //Let's make another clone of the original base class, bc, calling this instance bc2
-    BaseClass *ptrbc2 = new BaseClass( ptrCLA, M2KWH);
+    BaseClass *const ptrbc2 = new BaseClass( ptrCLA, M2KWH);
     for (int i=0; i < WORKBUFSIZE; i++) *(ptrbc2->connectionString + i) = *(connectionString + i);
 //    ptrbc2->setConString(ptrConnectionStringBuffer);
-//    ptrbc2->lookAtMyConnectionString = ptrConnectionStringBuffer;
+    ptrbc2->lookAtMyConnectionString = ptrConnectionStringBuffer;
     ptrbc2->debugFlags.mycase = M2KWH;
     ptrbc2->debugFlags.intMyCase = M2KWHCASE;
     ptrbc2->debugFlags.debug2 = ptrCLA->_debug2;
@@ -190,12 +201,13 @@ int main(int argc, char* argv[])  {
     ptrbc2->BFS = *(motherOfAllSelectStatements + M2KWHCASE );
     ptrbc2->results_File = defalutResultsFileName[M2KWHCASE];
 
+
     std::ostringstream os2;
     ptrbc2->outstring = &os2;
     
 //Let's make still another clone of the original base class, bc, calling this instance bc2
     
-    BaseClass *ptrbc0 = new BaseClass( ptrCLA, M1M2KWH);
+    BaseClass *const ptrbc0 = new BaseClass( ptrCLA, M1M2KWH);
     for (int i=0; i < WORKBUFSIZE; i++) *(ptrbc1->connectionString + i) = *(connectionString + i);
 //    ptrbc0->setConString(ptrConnectionStringBuffer);
 //    std::memcpy((void *)ptrbc0->connectionString, (void *)connectionString, strlen(ptrbc0->connectionString) );
@@ -223,15 +235,15 @@ int main(int argc, char* argv[])  {
     uint64_t time = sw->ElapsedNs();
     cout << "Time to initialize three pointers to functions: " << time << " ns." <<endl;
     if(sw != nullptr) delete sw; //Don't delete what you don't have!
-    uint64_t elapsedTime[numberOfThreads];
+    uint64_t elapsedTime[numberOfThreads + 1];
     if(!thread) {
-
+//Come here if NOT in multi-thread mode.
         ptrSWmain[M2KWHCASE]->Restart();
         rc = (*ptf[M2KWHCASE])(ptrbc2, -1);   //Go execute the M2KWHCASE
         elapsedTime[M2KWHCASE] = ptrSWmain[M2KWHCASE]->ElapsedUs();
         std::cout << ptrbc2->outstring->str() << std::endl;  //Output the M2KWHCASE results, right here.
         outfile << ptrbc2->outstring->str() << std::endl;     //Append the rensults onto the results file.
-        std::cout << "Execution Time of selectFromTable for the M2KWHCASE is " << elapsedTime[M2KWHCASE] << " µsec."  <<std::endl;
+        std::cout << "Execution Time of selectFromTable for the M2KWHCASE in single thread mode is: " << elapsedTime[M2KWHCASE] << " µsec."  <<std::endl;
         if (ptrSWmain[M2KWHCASE] != nullptr) delete ptrSWmain[M2KWHCASE];
         if (ptrbc->selectFromTable_RC) cerr << "The M2KWHCASE ended with a rc of " << ptrbc->selectFromTable_RC << endl;
     } else {
@@ -240,13 +252,13 @@ int main(int argc, char* argv[])  {
     }
 
     if(!thread) {
-
+//Come here if NOT in multi-thread mode.
     ptrSWmain[M1KWHCASE]->Restart();
     (*ptf[M1KWHCASE])(ptrbc1, -1);
     elapsedTime[M1KWHCASE] = ptrSWmain[M1KWHCASE]->ElapsedUs();
     std::cout << ptrbc1->outstring->str() << std::endl;  //Output the M1KWHCASE results, right here.
     outfile << ptrbc1->outstring->str() << std::endl;     //Append the rensults onto the results file.
-    std::cout << "Execution Time of selectFromTable for the M1KWHCASE is " << elapsedTime[M1KWHCASE] << " µsec."  <<std::endl;
+        std::cout << "Execution Time of selectFromTable for the M1KWHCASE in single thread mode is: " << elapsedTime[M1KWHCASE] << " µsec."  <<std::endl;
     if (ptrbc->selectFromTable_RC) cerr << "The M1KWHCASE ended with a rc of " << ptrbc->selectFromTable_RC << endl;
     } else {
         ptrSWmain[M1KWHCASE]->Restart(); //ReSet the clock to begin timing the M2KWHCASE under multi-threaded conditions
@@ -254,14 +266,16 @@ int main(int argc, char* argv[])  {
     }
     
     if(!thread) {
+//Come here if NOT in multi-thread mode.
     ptrSWmain[M1M2KWHCASE]->Restart(); //ReSet the clock to time execution of the M1M2Case under sequential, single thread conditions.
     (*ptf[M1M2KWHCASE])(ptrbc0, -1);
     elapsedTime[M1M2KWHCASE] = ptrSWmain[M1M2KWHCASE]->ElapsedUs();
     std::cout << ptrbc0->outstring->str() << std::endl;  //Output the M1M2KWHCASE results, right here.
     outfile << ptrbc0->outstring->str() << std::endl;     //Append the rensults onto the results file.
-    std::cout << "Execution Time of selectFromTable for the M1M2KWHCASE is " << elapsedTime[M1M2KWHCASE] << " µsec."  <<std::endl;
+    std::cout << "Execution Time of selectFromTable for the M1M2KWHCASE in single thread mode is: " << elapsedTime[M1M2KWHCASE] << " µsec."  <<std::endl;
     if (ptrbc->selectFromTable_RC) cerr << "The M1M2KWHCASE ended with a rc of " << ptrbc->selectFromTable_RC << endl;
     } else {
+//Come here if in multi-thread mode.
         ptrSWmain[M1M2KWHCASE]->Restart(); //ReSet the clock to time execution of the M1M2Case under multi-thread thread conditions.
         threads[M1M2KWHCASE] = std::thread((*ptf[M1M2KWHCASE]), ptrbc0, 0);
         
@@ -280,8 +294,8 @@ int main(int argc, char* argv[])  {
     }
     if (thread ) {
         threads[M1M2KWHCASE].join(); //Wait for the M1M2KWHCASE thread to terminate before we pull the rug (ptrbc0) out from under it.
-        cout << "First to Join: Time to execute the M1M2KWHCASE " << ptrSWmain[M1M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
-        outfile << "First to Join: Time to execute the M1M2KWHCASE " << ptrSWmain[M1M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
+        cout << "MultiThread mode, First to Join: Time to execute the M1M2KWHCASE " << ptrSWmain[M1M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
+        outfile << "MultiThread mode, First to Join: Time to execute the M1M2KWHCASE " << ptrSWmain[M1M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
 //        auto endT0 = std::chrono::high_resolution_clock::now();
         std::cout << ptrbc0->outstring->str() << std::endl;  //Output the M1M2KWHCASE results on this terminal
         outfile << ptrbc0->outstring->str() << std::endl;     //Append the rensults onto the results file.
@@ -289,12 +303,12 @@ int main(int argc, char* argv[])  {
     if (ptrbc0 != nullptr)  {
  //       ptrbc0 ->~BaseClass();
         delete ptrbc0 ;  //2018-06-04T09:20:48 We die here, probably becaue we already deleted ptrbc0. This delete seems to call BaseClass Destructor. So, let's remove this instruction.
-        ptrbc0=NULL;
+ //       ptrbc0=NULL; // Doesn't work when ptrbc2 becomes a constant pointer, as in: BaseClass *const ptrbc0 = new BaseClass( ptrCLA, M1M2KWH);
     }
     if (thread) {
         threads[M2KWHCASE].join(); //Wait for the M2KWHCASE thread to terminate before we pull the rug (ptrbc2) out from under it.
-        cout << "Second to Join: Time to execute the M2KWHCASE " << ptrSWmain[M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
-        outfile << "Second to Join: Time to execute the M2KWHCASE " << ptrSWmain[M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
+        cout << "MultiThread mode, next to Join: Time to execute the M2KWHCASE " << ptrSWmain[M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
+        outfile << "MultiThread mode, Next to Join: Time to execute the M2KWHCASE " << ptrSWmain[M2KWHCASE]->ElapsedUs() << " µsec. " << endl;
 
         std::cout << ptrbc2->outstring->str() << std::endl;  //Output the M2KWHCASE results on this terminal
         outfile << ptrbc2->outstring->str() << std::endl;     //Append the rensults onto the results file.
@@ -302,12 +316,12 @@ int main(int argc, char* argv[])  {
     if (ptrbc2 != nullptr)  {
 //        ptrbc2 ->~BaseClass();
         delete ptrbc2 ;  //2018-06-04T09:20:48 We die here, probably becaue we already deleted ptrbc2. This delete seems to call BaseClass Destructor. So, let's remove this instruction.
-        ptrbc2 = NULL;
+        //        ptrbc2 = NULL; // Doesn't work when ptrbc2 becomes a constant pointer, as in: BaseClass *const ptrbc2 = new BaseClass( ptrCLA, M2KWH);
     }
     if (thread) {
         threads[M1KWHCASE].join(); //Wait for the M1KWHCASE thread to terminate before we pull the rug (ptrbc1) out from under it.
-        cout << "Last to Join: Time to execute the M1KWHCASE " << ptrSWmain[M1KWHCASE]->ElapsedUs() << " µsec. " << endl;
-        outfile << "Last to Join: Time to execute the M1KWHCASE " << ptrSWmain[M1KWHCASE]->ElapsedUs() << " µsec. " << endl;
+        cout << "MultiThread mode, Last to Join: Time to execute the M1KWHCASE " << ptrSWmain[M1KWHCASE]->ElapsedUs() << " µsec. " << endl;
+        outfile << "MultiThread mode, Last to Join: Time to execute the M1KWHCASE " << ptrSWmain[M1KWHCASE]->ElapsedUs() << " µsec. " << endl;
         std::cout << ptrbc1->outstring->str() << std::endl;  //Output the M1KWHCASE result on this terminal.
         outfile << ptrbc1->outstring->str() << std::endl;     //Append the rensults onto the results file.
 //        auto duration0 = std::chrono::duration_cast<std::chrono::microseconds>(endT0 - startT0);
@@ -316,16 +330,20 @@ int main(int argc, char* argv[])  {
     if (ptrbc1 != nullptr)  {
 //        ptrbc1 ->~BaseClass();
         delete ptrbc1 ;  //2018-06-04T09:20:48 We die here, probably becaue we already deleted ptrbc1. This delete seems to call BaseClass Destructor. So, let's remove this instruction.
-//        ptrbc1 = NULL;
+ //       ptrbc1 = NULL; // Doesn't work when ptrbc2 becomes a constant pointer, as in: BaseClass *const ptrbc1 = new BaseClass( ptrCLA, M1KWH);
     }
     delete ptrbc;  //Delete main.cpp's BaseClass.
     delete ptrCLA;  //Delete main.cpp's CmdLineArg
     for(unsigned short j=0 ; j < numberOfThreads; j++) delete ptrSWmain[j];  //Delete all StopWatch objects
     auto endTest = std::chrono::high_resolution_clock::now() ;
     auto testDuration = std::chrono::duration_cast<std::chrono::microseconds>(endTest - startTest);
-    std::cout << "Line " << __LINE__ << " of file " << __FILE__ << ": Total Execution Time of " << *(argv + 0) << ", for all cases, is " << testDuration.count() << " µsec." << std::endl;
+    std::cout << "Line " << __LINE__ << " of file " << __FILE__ << ": Total Execution Time of " << *(argv + 0) << ", for all cases, is " << testDuration.count() << " µsec.\n" <<  BFM << BFM << "\n" <<std::endl;
     outfile    <<  "Line " << __LINE__ << " of file " << __FILE__ << ": Total Execution Time of program " << *(argv + 0) << ", for all cases, is " << testDuration.count() << " µsec.\n" << BFM << BFM << "\n" << std::endl;
+    elapsedTime[M2KWHCASE + 1] = ptrSWmain[M2KWHCASE + 1]->ElapsedUs();
+    std::cout << "Line " << __LINE__ << " of file " << __FILE__ << ": Total Execution Time of " << *(argv + 0) << ", for entire job, is " << elapsedTime[M2KWHCASE + 1] << " µsec.\n" <<  BFM << BFM << "\n" <<std::endl;
+    outfile    <<  "Line " << __LINE__ << " of file " << __FILE__ << ": Total Execution Time of program " << *(argv + 0) << ", for entire job, is " << elapsedTime[M2KWHCASE + 1] << " µsec.\n" << BFM << BFM << "\n" << std::endl;
     outfile.close(); //Close the results file.
+    delete ptr_bcMain;
 //    return rc;
 
 }

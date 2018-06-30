@@ -8,7 +8,7 @@
 #ifndef __MYPROTOTYPES__
 #define __MYPROTOTYPES__
 #include "BitFlags.hpp"
-#include "baseClass.hpp" 
+#include "baseClass.hpp"
 #include "/usr/local/pgsql/pgsql101/include/libpq-fe.h"
 #include <iostream>
 #include <string>

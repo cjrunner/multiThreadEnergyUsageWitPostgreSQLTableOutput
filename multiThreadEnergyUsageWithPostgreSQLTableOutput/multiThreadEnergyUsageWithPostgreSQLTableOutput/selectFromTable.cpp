@@ -26,13 +26,12 @@ int     polynomialFit(int polynomialdegree, int reccntr, double *XVALin, double 
  2864 | 2018-04-25 | 06:05:00 |  43215.253472 | 42804 |  7722 | 57.0455 | 287.064 |   15.92 | 2458234.253472 |      9
  2863 | 2018-04-24 | 07:28:00 |  43214.311111 | 42790 |  7721 | 55.8987 | 286.427 |   15.42 | 2458233.311111 |      9
  2862 | 2018-04-23 | 06:34:00 |  43213.273611 | 42775 |  7720 | 55.3796 | 286.139 |   17.86 | 2458232.273611 |      9
- 
- 
  */
-
+#include <stdio.h>
 #include <iostream>
 #include <fstream> 
 #include <cstring>
+#include <string>
 #include <sys/select.h>
 #include <sys/time.h>
 //#include <unistd.h>`
@@ -45,10 +44,14 @@ int     polynomialFit(int polynomialdegree, int reccntr, double *XVALin, double 
 #include "insertIBucketizedEnergyValuesIntoTable.hpp"
 #include "BitFlags.hpp"
 #include "setupForMultiFit.hpp"
+#include "tblPolyFit.hpp"
+#include "TblPolyFitWithCov.hpp"
+// include "/Users/cjc/c++/energyUsage/multiThreadEnergyUsageWithPostgreSQLTableOutput/multiThreadEnergyUsageWithPostgreSQLTableOutput/setupForMultiFit.hpp"
 #include "alignField.hpp"
 #include "varyingType.hpp"
-#include "tblPolyFit.hpp"
-const std::string currentDateTime(BaseClass *);
+
+// #include "tblPolyFit.hpp"
+std::ostringstream *current_Date_Time(BaseClass *);
 int     polynomialFit(int, int, double *, double *,  double *, double *,  double *, double *);
 using namespace std;
 
@@ -66,23 +69,34 @@ extern const char *fetchALLTransaction;
 extern const char *close_Transaction;
 extern const char *cases[]; //Array of strings specifying cases
 extern const char *myTempFiles[]; //Array of the names of Temp Files for the m1m2kwh case, the m1kwh case, and the m2kwh case.
-
+extern const char *dependentVariableColumn[];
+extern const char *theCaseLabels[];
 extern const char *copySQL;
 extern const char *theMotherOfAllUnionSelectStatements[];
-
+extern PGconn *mycon;
+//
 extern const char *motherOfAllSelectStatements[];
 extern const char *copy_file[];
 //extern const char *dropThenCreateTempTable;
 extern const char *drop_tbl_temp_eu[];
 extern const char *dropTable[];
 extern const char *create_tbl_temp_eu[];
-const std::string currentDateTime(BaseClass *);
+std::string currentDateTime(BaseClass *);
 void exit_nicely(BaseClass *,  int, int) ;
 void exit_nicely(BaseClass *bc, int rc, int lineNumber) {
     PQfinish(bc->conn); //Close this task's connection.
     cout << currentDateTime(bc) << "\t" << __FILE__ << "Line " << lineNumber << "\nexit_nicely is terminating this program with exit code: " << rc << cases[bc->debugFlags.mycase] << endl;
     bc->selectFromTable_RC = rc; //Duplicate the exit code as selectFromTable_RC this was the mother task will know why the child exited
     exit (rc);
+}
+std::ostringstream *current_Date_Time( BaseClass * );
+std::ostringstream *current_Date_Time( BaseClass *bc ) {
+    bc->now = time(0);
+    bc->tstruct = *localtime(&bc->now);
+    bc->date_Time << (YEAROFSTANDARDEPOCH + bc->tstruct.tm_year) << "-" << (1 + bc->tstruct.tm_mon) << "-" \
+    << bc->tstruct.tm_mday << " " << bc->tstruct.tm_hour << ":" << bc->tstruct.tm_min << ":" \
+    << bc->tstruct.tm_sec << " " << bc->tstruct.tm_zone;
+    return &bc->date_Time;
 }
 int createTheTable(BaseClass *, const char *, bool = true);
 int dropTheTable(BaseClass *, const char *);
@@ -92,13 +106,28 @@ int executeSQL(BaseClass *, const char *, bool = true);
 int beginTransaction(BaseClass *, const char *, bool = true);
 int fetchAllTransaction(BaseClass *, const char *, bool = false);
 int insertBucketizedEnergyValuesIntoTable( double, double, double, double, double, int, BaseClass *);
+template<typename T>
+std::string to_string(T t)
+{
+    std::ostringstream oss;
+    oss << t;
+    return oss.str();
+}
+
 void selectFromTable(register BaseClass *ptrbc, int myRC) {
 
     enum bucketColNames  {_avgtemp, _avgeu, _stddeveu, _mineu, _maxeu, _countu};  //This enum did not work when placed in BaseClass
-    const char *theCases[] = {"m1m2kwh", "m1kwh", "m2kwh"};
+
     ptrbc->selectFromTable_RC = 0;
-    ptrbc->conn = PQconnectdb(ptrbc->lookAtMyConnectionString);
-    if (ptrbc->debugFlags.debug2 ) std::cout << theCases[ptrbc->debugFlags.intMyCase] << currentDateTime(ptrbc) << "\nThe mother of all select statements looks like:\n" << motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase] << std::endl;
+    mycon = PQconnectdb(ptrbc->connectionString);
+    ptrbc->conn = mycon;  //Copy over the pointer
+    if(PQstatus(ptrbc->conn) != CONNECTION_OK ) {
+        cerr << "Connection to database failed because: " << PQerrorMessage(ptrbc->conn) << ". We're exiting with exit code of 1."<< endl;
+        exit(1);
+    } else {
+        cout << "It looks like we connected to the database `" << PQdb(ptrbc->conn) << "`, on host `" << PQhost(ptrbc->conn)  << "` ok." << endl;
+    }
+    if (ptrbc->debugFlags.debug2 ) std::cout << dependentVariableColumn[ptrbc->debugFlags.intMyCase] << currentDateTime(ptrbc) << "\nThe mother of all select statements looks like:\n" << motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase] << std::endl;
 //============
 //    const char * sqlStat0 = "SELECT ";
     //(8 +10)/2;
@@ -108,28 +137,29 @@ void selectFromTable(register BaseClass *ptrbc, int myRC) {
     //10;
     const char *sqlStat1 = " AS \"AvgIndependentVariable\", avg(%s) AS \"AvgDependentVariable\", stddev(%s) AS \"σOfDependentVariable\", min(%s) AS \"minDependentVariable\", max(%s) AS \"maxDependentVariable\", count(*) AS \"NumberOfDependentVariablesInThisBucket\" FROM tbl_energy_usage WHERE avtempf > ";
 
-
-
-    
     ptrbc->len = strlen(motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase]);
     ptrbc->sql = new char [ ptrbc->len ];
     ptrbc->len = sprintf(ptrbc->sql, motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase], ptrbc->debugFlags.includeM2InAverages);  //At this point ptrbc->debugFlags.includeM2InAverages is either a 1 or a zero, depending upon the presences of the -c command line switch. If -c switch is NOT present then ptrbc->debugFlags.includeM2InAverages = 1, else its zero.
 
     ptrbc->len = strlen(sqlStat1);
-    ptrbc->len += 4 * (11 + strlen ( ptrbc->debugFlags.dependentVariableColumn ) ); //m1m2kwh is the longest it can be
-    ptrbc->subCharBuffer = new char[  ptrbc->len ];
-    ptrbc->len = sprintf(ptrbc->subCharBuffer,sqlStat1, ptrbc->debugFlags.dependentVariableColumn, ptrbc->debugFlags.dependentVariableColumn, ptrbc->debugFlags.dependentVariableColumn, ptrbc->debugFlags.dependentVariableColumn);
+    ptrbc->len += 4 * (11 + strlen( dependentVariableColumn[ptrbc->debugFlags.intMyCase]) ); //Add to the length the anticipated length of the case labels and other data. m1m2kwh is the longest it can be
+    ptrbc->subCharBuffer = new char[  ptrbc->len ]; //Allocate space for our buffer
+    ptrbc->len = sprintf(ptrbc->subCharBuffer,sqlStat1, dependentVariableColumn[ptrbc->debugFlags.intMyCase], \
+                         dependentVariableColumn[ptrbc->debugFlags.intMyCase], \
+                         dependentVariableColumn[ptrbc->debugFlags.intMyCase], \
+                         dependentVariableColumn[ptrbc->debugFlags.intMyCase]);
 //===============
 
  
-
-    if (!ptrbc->debugFlags.tableCreated) {  //Have we created the table?
+/*
+    if (ptrbc->debugFlags.tableCreated == true) {  //Have we created the table?
         try {
             ptrbc->rc[SELECTFROMTABLE] = dropTheTable(ptrbc, dropTable[ptrbc->debugFlags.intMyCase]);   //First drop the pre-existing table to get a fresh start.
         } catch (const std::exception &e) {
             std::cerr << "Failed to drop the table, tbl_bucketized_by_tempf_ranges. EXITING " << cases[ptrbc->debugFlags.intMyCase] << std::endl;
             exit(1);
-        }
+       }
+    }  else {
         try {
             if(createTheTable(ptrbc, createTable[ptrbc->debugFlags.intMyCase], true)) std::cerr << "Failed to create the table, tbl_bucketized_by_tempf_ranges. EXITING " << cases[ptrbc->debugFlags.intMyCase] << std::endl; //Go create table tbl_bucketized_by_tempf_ranges
         } catch (const std::exception &e) {
@@ -138,38 +168,46 @@ void selectFromTable(register BaseClass *ptrbc, int myRC) {
         }
         ptrbc->debugFlags.tableCreated = true;  //Indicate table created.
     }
+ */
+    
 //     MOVED TO myPrototypes   enum colnames {_currentavtempf,  _previousavtempf,  _davtempf,  _currentavtempk,  _previousavtempk,   _previousdate,   _currentdate, _dday,  _previousm1kwh, _currentm1kwh, _m1Usage, _previousm2kwh,  _currentm2kwh, _m2Usage, _AvgDailyUsage};
 
-
+    ptrbc->res = PQexec(ptrbc->conn,  createTable[ptrbc->debugFlags.intMyCase]);  //Drop the table, if it exists, then recreate the table specific for this case.
+    if (PQresultStatus(ptrbc->res) != PGRES_COMMAND_OK) {
+        std::cerr << "Line " << __LINE__ << ", File " << __FILE__ << ", case "  << cases[ptrbc->debugFlags.intMyCase] <<": Failed to execute the SQL statement: " << createTable[ptrbc->debugFlags.intMyCase] << ". Error cause:\n" << PQerrorMessage(ptrbc->conn) << std::endl;
+        exit_nicely(ptrbc, BEGINTRANSACTIONFAILED, __LINE__);
+    }
+    PQclear(ptrbc->res);
+    
     ptrbc->res = PQexec(ptrbc->conn,  begin_Transaction);
     if (PQresultStatus(ptrbc->res) != PGRES_COMMAND_OK) {
-        std::cerr << "cases[ptrbc->debugFlags.intMyCase]" <<"Failed to execute the SQL statement: " << begin_Transaction << ". Error cause:\n" << PQerrorMessage(ptrbc->conn) << std::endl;
-        ptrbc->rc[SELECTFROMTABLE] = BEGINTRANSACTIONFAILED;
+        std::cerr << "Line " << __LINE__ << ", File " << __FILE__ << ", case " << cases[ptrbc->debugFlags.intMyCase] <<": Failed to execute the SQL statement: " << begin_Transaction << ". Error cause:\n" << PQerrorMessage(ptrbc->conn) << std::endl;
+        exit_nicely(ptrbc, 3, __LINE__);
     }
     //    PQclear(ptrbc->res);
 
 //    rc = executeSQL(ptrC, ptrbc->res, ptrBigSQL);
     ptrbc->res = PQexec(ptrbc->conn,  motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase]);
     if (PQresultStatus(ptrbc->res) != PGRES_COMMAND_OK) {
-        std::cerr << "Failed to execute the SQL statement: " << motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase] << ". Error cause:\n" <<
+        std::cerr << "Line " << __LINE__ << " of file " << __FILE__ << ": Failed to execute the SQL statement: " << motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase] << ". Error cause:\n" <<
         PQerrorMessage(ptrbc->conn) << cases[ptrbc->debugFlags.intMyCase] << std::endl;
-        ptrbc->rc[SELECTFROMTABLE] = EXECUTESQLFAILED;
-    }
+        exit_nicely(ptrbc, EXECUTESQLFAILED, __LINE__);
 
-    PQclear(ptrbc->res);
-    if (ptrbc->rc[SELECTFROMTABLE]) exit_nicely (ptrbc, ptrbc->rc[SELECTFROMTABLE], __LINE__);
+    } else {
+        PQclear(ptrbc->res);
+    }
 //    rc = fetchAllTransaction(ptrC,ptrbc->res, fetchALLTransaction);
     ptrbc->res = PQexec(ptrbc->conn,  "FETCH ALL in myportal" );
     if (PQresultStatus(ptrbc->res) != PGRES_TUPLES_OK) {
         std::cerr << "Failed to execute the SQL FETCH ALL: " << ptrbc->sql << ". Error cause:\n" <<
         PQerrorMessage(ptrbc->conn) << cases[ptrbc->debugFlags.intMyCase] << std::endl;
-        ptrbc->rc[SELECTFROMTABLE] = FETCHALLFAILED;
         cerr << "Line " << __LINE__ << "Of file " << __FILE__ << "Failed when attempting to execute this sql:\n" << motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase] << "\nWe got a return status of: " << PQresultStatus(ptrbc->res) << cases[ptrbc->debugFlags.intMyCase] << endl;
-        exit_nicely(ptrbc, ptrbc->rc[SELECTFROMTABLE], __LINE__);
+        exit_nicely(ptrbc, FETCHALLFAILED, __LINE__);
     }
 
     ptrbc->numberOfReturnedRows = PQntuples(ptrbc->res);
     ptrbc->numberOfReturnedColumns = PQnfields(ptrbc->res);
+
 //    Align *af = new Align(ASSUMEDBUFFERSIZE);
     const char *headerRow[] ={" currentavtempf | prevavtempf |  ∆avtempf  | currentavtempk | prevavtempk |   yesterday    |   today    | ∆day | cm1kwh | pm1kwh | m1Usage | cm2kwh | pm2kwh | m2Usage | AvgDailyUsage",
                                 "----------------+-------------+------------+----------------+-------------+----------------+------------+------+------- +------- +---------+------- +- ------+---------+---------------+"}; \
@@ -196,8 +234,8 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
       a) The first element lacks the previous day's reading;  \
       b) Likely, the last element does not have a full-day's worth of readings.
     AllocateWorkingVectors *awv = new AllocateWorkingVectors (ptrbc->numberOfReturnedRows - NEITHERFIRSTORLAST);   /* << =================== awv object ================ */ //Strange, yet powerful, things these templates!!
-    if (ptrbc->debugFlags.debug2 ) std::cout  <<headerRow[0] << "\t" << theCases[ptrbc->debugFlags.intMyCase] << std::endl;
-    if (ptrbc->debugFlags.debug2 ) std::cout  <<headerRow[1] << "\t" << theCases[ptrbc->debugFlags.intMyCase] << std::endl;
+    if (ptrbc->debugFlags.debug2 ) std::cout  <<headerRow[0] << "\t" << theCaseLabels[ptrbc->debugFlags.intMyCase] << std::endl;
+    if (ptrbc->debugFlags.debug2 ) std::cout  <<headerRow[1] << "\t" << theCaseLabels[ptrbc->debugFlags.intMyCase] << std::endl;
 
     const size_t bufferSize = SIZEOFONEROW  *  ptrbc->numberOfReturnedRows;
 #define THISROWISNULL 1
@@ -205,6 +243,9 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
 
     ptrbc->copyBuffer = new char[bufferSize]; //Get sufficient space to store, in one buffer, all temperture and energy usage (eu) data.
     memset(ptrbc->copyBuffer, 0, bufferSize); //Start with a clean copyBuffer
+    ptrbc->bufferOffset = 0;  //The constructor should initialize this.
+    ptrbc->grc = 0;
+    ptrbc->brc = 0;
     for (ptrbc->loopCounter = 0; ptrbc->loopCounter < ptrbc->numberOfReturnedRows; ptrbc->loopCounter++ ) {
         if (PQgetisnull(ptrbc->res, ptrbc->loopCounter, _AvgDailyUsage) == THISROWISNULL) { //PQgetisnull Returns 1 if row IS NULL. Returns 0 if row is NOT NULL
             ++ptrbc->brc; //increment the bad row count.
@@ -275,7 +316,11 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
         ++ptrbc->trc_t; //Increment the total row count, includes valid and invalid rows.
         
     }  //End of for loop
-    strcat(ptrbc->copyBuffer , "\\." );   //The COPY command likes to see `\.` as the final line.
+    strcat(ptrbc->copyBuffer , "\\." );   //The COPY command likes to see `\.` as the penultimate line.
+    ptrbc->bufferOffset += 2;
+    *(ptrbc->copyBuffer+ptrbc->bufferOffset) = '\n';   //The COPY command likes to see `\n` as the final line.
+    ptrbc->bufferOffset++;
+    *(ptrbc->copyBuffer+ptrbc->bufferOffset) = '\0';
     if (ptrbc->debugFlags.debug2) cout << "copyBuffer Looks Like: \n" << ptrbc->copyBuffer << endl;
     if (ptrbc->debugFlags.debug2) std::cout << "\nNumber of VALID Returned Rows: " << ptrbc->grc << ".\nNumber of INVALID Rows: " << ptrbc->brc << ".\nTotal Number of rows processed: " << ptrbc->grc + ptrbc->brc << ".\nNumber of unprocessed rows: " << ptrbc->numberOfReturnedRows-ptrbc->trc_t << "\n length of ptrbc->copyBuffer " << strlen(ptrbc->copyBuffer) << " bytes." << cases[ptrbc->debugFlags.intMyCase] << std::endl;
     
@@ -291,9 +336,18 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
     //Take a character --  as in ptrbc->debugFlags.mycase -- and turn \
     it into an integer, so arrays can use it as an index, by subtracting the character '0'
     ptrbc->k = (int)(ptrbc->debugFlags.mycase - '0');
-    ptrbc->myTempFile.open(myTempFiles[ptrbc->k]);
+    ptrbc->theTempFile = myTempFiles[ptrbc->k];
+    /*  These data in ptrbc->theTempFile will be used by the copy operation, below */
+    ptrbc->tmpfile = fopen(ptrbc->theTempFile, "w");
+    for(ptrbc->row=0; ptrbc->row < strlen(ptrbc->copyBuffer); ptrbc->row++) {
+        ptrbc->rc[SELECTFROMTABLE] = fputc(*(ptrbc->copyBuffer + ptrbc->row), ptrbc->tmpfile);
+    }
+    fclose(ptrbc->tmpfile);
+    /*  SUDDENLY, EVEN the simple stuff doesn't work.
+    ptrbc->myTempFile.open(ptrbc->theTempFile, ios_base::out);   //2018-06-26T05:45:48: Never had to do std::ios_base::out
     ptrbc->myTempFile  << ptrbc->copyBuffer  << endl;
     ptrbc->myTempFile.close();  //Close the output file
+    */
     ptrbc->allocateArrays(ptrbc->grc);
     for(ptrbc->loopCounter = 0; ptrbc->loopCounter<ptrbc->grc; ptrbc->loopCounter++ )  {
         ptrbc->setArray(IV, ptrbc->loopCounter, awv->temperatureVector[ ptrbc->loopCounter] ); //Place the independent variable, Average Daily Temperature, into its designated array.
@@ -302,10 +356,22 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
     }
 
     //WE will  now close the portal and end the transaction because I don't think we can do a create table on the ptrC connection with a transaction in progress.
+    PQclear(ptrbc->res); // 2018-06-29T19:35:35 Do we want to do this here and now?
+    ptrbc->res = PQexec(ptrbc->conn,  "CLOSE myportal; END;");
+    if (PQresultStatus(ptrbc->res) != PGRES_COMMAND_OK) {
+        std::cerr << "Line " << __LINE__ << " of file " << __FILE__ << ": Failed to execute the SQL statement: " << motherOfAllSelectStatements[ptrbc->debugFlags.intMyCase] << ". Error cause:\n" <<
+        PQerrorMessage(ptrbc->conn) << cases[ptrbc->debugFlags.intMyCase] << std::endl;
+        exit_nicely(ptrbc, EXECUTESQLFAILED, __LINE__);
+        
+    } else {
+        PQclear(ptrbc->res);
+    }
+    
+    /* This routine, closePortal, chooses to set ptrbc->conn to NULL upon entry. Why, I don't know. but the above code where we execute the "CLOSE myportal; END;" SQL statements together is my workaround.
     ptrbc->rc[SELECTFROMTABLE] = closePortal(ptrbc , "CLOSE myportal");  //Close myportal before ending the transaction. closePortal does a ¡PQclear! ;
 
     ptrbc->rc[SELECTFROMTABLE] = endTransaction(ptrbc, "END");  //End the transaction. endTransaction does a ¡PQclear!
-
+*/
     //Create a temporary table named tbl_temp_eux; it is here where we will mirror on a temporary table the data that went into the temperature vector and the energy usage vector, above.
     if (!ptrbc->debugFlags.tempTableCreated) {  //Have we created the temporary table?
         //We will do the DROP Table and Create Table with one SQL statement
@@ -325,19 +391,22 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
     }
 // BEGINNING OF COPY OPERATION
 // No Longer Used    const char *errmsg=NULL;
-    ptrbc->res = PQexec(ptrbc->conn,  copy_file[ptrbc->debugFlags.intMyCase] ); //Execute the SQL statement: COPY tbl_temp_eu (temp, eu) STDIN;
+    ptrbc->errmsgCOPY="";
+    if (ptrbc->debugFlags.debug2 ) cout << "COPY SQL looks like: " << copy_file[ptrbc->debugFlags.intMyCase] << endl;
+    ptrbc->resC = PQexec(ptrbc->conn,  copy_file[ptrbc->debugFlags.intMyCase] ); //Execute the SQL statement: COPY tbl_temp_eu (temp, eu) STDIN;
+//    PQclear(ptrbc->resC);
     ptrbc->resultsPQputCopyData = PQputCopyData(ptrbc->conn, ptrbc->copyBuffer, (int)strlen(ptrbc->copyBuffer));
-    ptrbc->resultsPQputCopyEnd = PQputCopyEnd(ptrbc->conn, ptrbc->errmsg);
+    ptrbc->resultsPQputCopyEnd = PQputCopyEnd(ptrbc->conn, ptrbc->errmsgCOPY);
 //    int whichIsIt = PQresultStatus(ptrbc->res);
     if (ptrbc->debugFlags.debug2 )  cout << " resultsPQputCopyData: " << ptrbc->resultsPQputCopyData << "; resultsPQputCopyEnd: " << ptrbc->resultsPQputCopyEnd << cases[ptrbc->debugFlags.intMyCase] << endl;
     
-    if (ptrbc->errmsg) {
-        cerr << "COPY operation failed with error message of: " << ptrbc->errmsg << cases[ptrbc->debugFlags.intMyCase] << endl;
+    if (strlen(ptrbc->errmsgCOPY)) {
+        cerr << __LINE__ << " of file " << __FILE__ << ": COPY operation failed with error message of-->" << ptrbc->errmsgCOPY << "<--" <<cases[ptrbc->debugFlags.intMyCase] << endl;
     } else {
         if (ptrbc->debugFlags.debug2 ) cout << "COPY operation seems to have worked!" << cases[ptrbc->debugFlags.intMyCase] << endl;
 
-    PQclear(ptrbc->res);
     }
+    PQclear(ptrbc->resC);
 //END OF COPY OPERATION
 
     ptrbc->rc[SELECTFROMTABLE] = beginTransaction(ptrbc, begin_Transaction);  //Start up a new transaction where we will
@@ -367,7 +436,11 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
     a_ff->alignSetup( headerEU[1]);
     
     ptrbc->loopCounter = 0; //Reset this.
-    while ( ptrbc->buckettemp < ptrbc->maxBucketTemp && ptrbc->loopCounter < ptrbc->numberOfReturnedRows ) {  //Beginning of while statement.
+    ptrbc->worthyOfPolynomialFitProcessing=0;
+    ptrbc->countOfGoodEntries = 0;
+    ptrbc->countOfBadEntries = 0;
+    ptrbc->buckettemp = MINTEMPERATURE; //Start out at the minimum temperature.
+    while ( (ptrbc->buckettemp <  MAXTEMPERATURE) && (ptrbc->loopCounter < ptrbc->numberOfReturnedRows) ) {  //Beginning of while statement.
         // See http://libpqxx.readthedocs.io/en/latest/a00004.html for explanation of how the next two lines work
 
         if ( ( PQgetisnull(ptrbc->res, ptrbc->loopCounter, _countu) ) ) { //Weed-out any bad records that contain poisonous fields.
@@ -395,7 +468,7 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
                 ptrbc->values[_maxeu] = atof(PQgetvalue(ptrbc->res, ptrbc->loopCounter, _maxeu) );
                 ptrbc->thisCount = atoi(PQgetvalue(ptrbc->res, ptrbc->loopCounter, _countu)); 
                 ++ptrbc->worthyOfPolynomialFitProcessing;
-                ++ptrbc->debugFlags.countOfGoodEntries;
+                ++ptrbc->countOfGoodEntries;
                 //INSERT the values we extracted into table tbl_bucketized_by_tempf_ranges. NOW THAT WE HAVE COPY WORKIN, PERHAPS WE CAN USE COPY RATHER THAN INSERT INTO … BLAH, BLAH …
                 ptrbc->rc[SELECTFROMTABLE] = insertBucketizedEnergyValuesIntoTable( ptrbc->values[_avgtemp], ptrbc->values[_avgeu], ptrbc->values[_stddeveu],  ptrbc->values[_mineu], ptrbc->values[_maxeu], ptrbc->thisCount, ptrbc);
                 if (ptrbc->rc[SELECTFROMTABLE]) {
@@ -407,11 +480,11 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
                 continue; //skip this record because it's no good, not enough data for a standard deviation. Go on to do the next record.
             }
         } catch (const std::exception &e) {
-            ++ptrbc->debugFlags.countOfBadEntries;
+            ++ptrbc->countOfBadEntries;
             std::cerr << __FILE__ "2. bad values try/catch detected errors for entry number " << ptrbc->debugFlags.countOfBadEntries + ptrbc->countOfGoodEntries << cases[ptrbc->debugFlags.intMyCase] << std::endl;
         }  //end of try/catch block
         
-        ptrbc->buckettemp += BUCKETSIZE;
+        ptrbc->buckettemp += BUCKETSIZE;  //Go for the next bucket.
         ++ptrbc->loopCounter;
     }  //End of while loop
     ptrbc->rc[SELECTFROMTABLE] = closePortal(ptrbc , close_Transaction);  //Close myportal before ending the transaction
@@ -440,7 +513,10 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
                     std::cerr << "For some unknown reason, the numberOfReturnedRows: " << ptrbc->numberOfReturnedRows << " AND values worthyOfPolynomialFitProcessing: " << ptrbc->worthyOfPolynomialFitProcessing << " have different values. " << cases[ptrbc->debugFlags.intMyCase] << std::endl;
                 }
                 SetupForMultiFit  *smf = new SetupForMultiFit(ptrbc, POLYNOMIALDEGREE, ptrbc->worthyOfPolynomialFitProcessing, ptrbc->ptrValues);   /* << =================================== */ //First, establish an instance of the SetupForMultiFit object.
-
+                ptrbc->ptrThisIsReallySetupForMultiFit = smf;   //Since BaseClass has difficulty identifying the \
+                subordinate SetupForMultiFit class, we'll put the just acquired pointer to what we know is of \
+                type SetupForMultiFit into BaseClass of type void *!! I hate playing hop-scotch with the \
+                compiler.
                 for  (ptrbc->loopCounter = 0, ptrbc->rowBeingProcessed = 0; ptrbc->loopCounter < ptrbc->worthyOfPolynomialFitProcessing; ++ptrbc->loopCounter, ++ptrbc->rowBeingProcessed)
                 { //Begin loading the gsl matrices and vectors with values.
                     ptrbc->values[_avgtemp] =atof(PQgetvalue(ptrbc->res, ptrbc->rowBeingProcessed, _avgtemp) ) ;   //Considered the independent Variable
@@ -458,16 +534,25 @@ enum colwidths {col00 = 16, col01=13, col02=12, col03=16, col04=13, col05=16, co
    //             PQclear(ptrbc->res);  //Get this messag: "WARNING:  there is no transaction in progress" because we closed the myportal cursor and ended the transaction
                 ptrbc->rc[SELECTFROMTABLE] = closePortal(ptrbc , end_Transaction);  //Close myportal
 //  KILL THE WARNING MESSAGE                ptrbc->rc[SELECTFROMTABLE] = endTransaction(ptrbc, end_Transaction);  //Get another `WARNING:  there is no transaction in progress`
-                
+
                 ptrbc->rc[SELECTFROMTABLE] = smf->doMultiFit( ); //Actually go out and do the gsl_multifit
-                ptrbc->rc[SELECTFROMTABLE] = smf->outputPolynomial("EnergyUsage(T) = ", cases[ptrbc->debugFlags.intMyCase]);
-                *ptrbc->outstring << smf->outputCovarianceMatrix("cov = [", cases[ptrbc->debugFlags.intMyCase]) << "☜ χ-squared" << cases[ptrbc->debugFlags.intMyCase] << "\n";
-                *ptrbc->outstring << smf->computeTrace(smf->covarienceMatrix->data, (int)smf->onePlusPolynomialDegree) << "☜ Trace of Covariance Matrix" << cases[ptrbc->debugFlags.intMyCase]  << "\n";
-                *ptrbc->outstring << smf->computeCorrelationBetweenIndependentAndDependentVariables(ptrbc) << "☜ correlation coefficient" << cases[ptrbc->debugFlags.intMyCase] << "\n";
-                ptrbc->squareRootOfSumOfTheSquaresOfTheVarience = smf->computeGoodnessOfResults(ptrbc);
+                ptrbc->rc[SELECTFROMTABLE] = smf->outputPolynomial( "EnergyUsage(T) = ",  cases[ptrbc->debugFlags.intMyCase]);
+                ptrbc->floatCovarianceMatrix = new float[NUMBEROFCOVARIANCEMATRIXENTRIES];
+                //   UNUSED    VaryingType<float> *tfloat =new VaryingType<float>();  //This tfloat object, for type double, should serve us for making input parameters p2, p3, p4, p5, p7, and p8 in network byte order.
+                
+                smf->ptrCovarianceMatrixArray = ptrbc->floatCovarianceMatrix; //
+                smf->outputCovarianceMatrixAndReturnChi2( "cov = [", cases[ptrbc->debugFlags.intMyCase] );
+                std::string strD = to_string<double>(smf->computeTrace(smf->covarienceMatrix->data, 1+PD));
+
+                const std::string tOCM("☜ Trace of Covariance Matrix");
+                const std::string newLine("\n");
+                smf->stringStreamForOutput << smf->computeCorrelationBetweenIndependentAndDependentVariables( )  << "☜ correlation coefficient" << cases[ptrbc->debugFlags.intMyCase] << newLine;
+                smf->stringStreamForOutput << strD  << tOCM << cases[ptrbc->debugFlags.intMyCase]  << newLine;
+                smf->stringStreamForOutput << smf->computeCorrelationBetweenIndependentAndDependentVariables( ) << "☜ correlation coefficient" << cases[ptrbc->debugFlags.intMyCase] << "\n";
+                ptrbc->squareRootOfSumOfTheSquaresOfTheVarience = smf->computeGoodnessOfResults( );
                 ptrbc->averageVariencePerValidReading = ptrbc->squareRootOfSumOfTheSquaresOfTheVarience/ptrbc->grc;
                 
-                *ptrbc->outstring << ptrbc->squareRootOfSumOfTheSquaresOfTheVarience << "☜ Square Root Of Sum Of TheSquares Of The Varience; \n" << ptrbc->averageVariencePerValidReading << "☜ Average Varience Per Valid Reading\n" << ptrbc->averageVariencePerValidReading*100 << "☜ \% Average Varience Per Valid Reading\n"<< ptrbc->grc << "☜ Number of valid meter readings (# observed dependent variables)" <<  cases[ptrbc->debugFlags.intMyCase] << "\n";
+                smf->stringStreamForOutput << ptrbc->squareRootOfSumOfTheSquaresOfTheVarience << "☜ Square Root Of Sum Of TheSquares Of The Varience; \n" << ptrbc->averageVariencePerValidReading << "☜ Average Varience Per Valid Reading\n" << ptrbc->averageVariencePerValidReading*100 << "☜ \% Average Varience Per Valid Reading\n"<< ptrbc->grc << "☜ Number of valid meter readings (# observed dependent variables)" <<  cases[ptrbc->debugFlags.intMyCase] << newLine;
 /* Right about here is where we want to call a TBD class to insert into the newly (as of 2018-06-14) created table, tbl_poly_fit:
 Column |           Type           |                         Modifiers                         | Storage  |                                                    Description
 -------+--------------------------+-----------------------------------------------------------+----------+--------------------------------------------------------------------------------------------------------------------
@@ -493,14 +578,27 @@ Indexes: "tbl_poly_fit_pkey" PRIMARY KEY, btree (id)
         std::cerr << "Insufficient number of VALID datapoints to do MultiFit processing for desired polynomial of degree " << POLYNOMIALDEGREE << cases[ptrbc->debugFlags.intMyCase] << std::endl;
     }
 //Put into tbl_poly_fit the polynomial coefficients, the meter id, the correlation coeffincient, and the χ-squared value resulting from the above computations. We will not, at this time, store the covarience matricies 16 elements into tbl_poly_fit because of ignorence on my part of usefulness of these data from the covarience matrix.
-    const short polynomialDegree=POLYNOMIALDEGREE;
-    const short myCase = ptrbc->debugFlags.intMyCase;
+ //  UNUSED   const short polynomialDegree=POLYNOMIALDEGREE;
+ //  UNUSED   const short myCase = ptrbc->debugFlags.intMyCase;
     // insert code here...
     //long doubles are 16 bytes long
     //doubles are 8 bytes long
     //floats are 4 bytes long
     //shorts are 2 bytes long
-    ptrbc->ptrTPF = new TblPolyFit(ptrbc->lookAtMyConnectionString);
+
+ //   TblPolyFitWithCov *ptrTPF = new TblPolyFitWithCov;
+    SetupForMultiFit *const sumf = (SetupForMultiFit *)ptrbc->ptrThisIsReallySetupForMultiFit;
+    TblPolyFitWithCov *pfWC = new TblPolyFitWithCov( ptrbc  );
+    for (ptrbc->row=0; ptrbc->row < 1+POLYNOMIALDEGREE; ptrbc->row++) {  //Get the coefficients
+         *(pfWC->copyOfCoefficients +ptrbc->row) = sumf->getCoefficient(ptrbc->row); //One coefficient at a time.
+    }
+    for (ptrbc->row=0; ptrbc->row < 1+POLYNOMIALDEGREE; ptrbc->row++) {
+        for (ptrbc->column=0; ptrbc->column < 1+POLYNOMIALDEGREE; ptrbc->column++) {
+            *(pfWC->ptrToCovarianceMatrix+ ptrbc->row * sizeof(float) + ptrbc->column) = *(sumf->ptrCovarianceMatrixArray + sumf->row * sizeof(float) + sumf->col); //Move the covariance data over to the TblPolyFitWithCov Class
+        }
+    }
+    pfWC->correlationCoefficient = sumf->getCorrelationCoefficient();
+    pfWC->chi2 = sumf->getChi2();
     //int doInsertInto(const char *, int *, double *, double *, double *, double *, smallint *, double *, double *)
 //χ-squared value --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 //Correlation Coefficient ------------------------------------------------------------------------------------------------------------------------------------------------------------+                       |
@@ -512,13 +610,16 @@ Indexes: "tbl_poly_fit_pkey" PRIMARY KEY, btree (id)
 //short int showing polynomial degree ----------------------------------+                   |                  |                   |                   |             |                |                       |
 //Base Class or ConnString --------------------+                        |                   |                  |                   |                   |             |                |                       |
     //                                          V                        V                   V                  V                   V                   V             V                V                       V
-    rc=ptrbc->ptrTPF->TblPolyFit::doInsertInto(ptrbc->lookAtMyConnectionString, &polynomialDegree, &(smf->getCoefficient(0) ), &(getCoefficient(1) ), &(getCoefficient(2)), &(getCoefficient(3)), &myCase, &(smf->getCorrelationCoefficient()), &(smf->getChi2() ) );
-    if(rc) {
-        std::cout << "Some kind of problem in TblPolyFit::doInsertInto, got a return code of " << rc << std::endl;
+    //    int doInsertInto(short *, double *, double *, double *, double *, float *, short *, double *, double *);
+    ptrbc->rc[SELECTFROMTABLE] = pfWC->doInsertInto(ptrbc->lookAtMyConnectionString );
+    if(ptrbc->rc[SELECTFROMTABLE]) {
+        std::cout << "Some kind of problem in TblPolyFit::doInsertInto, got a return code of " << ptrbc->rc[SELECTFROMTABLE] << std::endl;
     } else {
-        std::cout << "Successful call to TblPolyFit::doInsertInto, got a return code of " << rc << std::endl;
+        std::cout << "Successful call to TblPolyFit::doInsertInto, got a return code of " << ptrbc->rc[SELECTFROMTABLE] << std::endl;
     }
-    delete ptrbc->ptrTPF;
+    delete [] ptrbc->floatCovarianceMatrix;
+
+    delete pfWC;
     if (ptrbc->sql != nullptr) delete [] ptrbc->sql;
     if (ptrbc->copyBuffer != nullptr) delete [] ptrbc->copyBuffer;
     if (ptrbc->subCharBuffer != nullptr) delete [] (ptrbc->subCharBuffer);   //c++'s Equivalent to C's free when we allocate storage with a calloc/malloc. Note the use of [] prior to the (subCharacterBuffer);

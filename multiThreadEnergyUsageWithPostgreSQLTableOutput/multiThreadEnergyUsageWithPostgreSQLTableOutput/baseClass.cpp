@@ -9,15 +9,17 @@
 #include <string>
 #include <stdio.h>
 #include <time.h>
-#include "setupForMultiFit.hpp"
+//#include "setupForMultiFit.hpp"
+#include "/Users/cjc/c++/energyUsage/multiThreadEnergyUsageWithPostgreSQLTableOutput/multiThreadEnergyUsageWithPostgreSQLTableOutput/setupForMultiFit.hpp"
 #include "cmdLineArgs.hpp"
 #include "baseClass.hpp"
-#include "myPrototypes.hpp"
+#include "myPrototypes.hpp" 
 extern const char *motherOfAllSelectStatements[];
 #define NUMBEROFAVGTEMPS 100; //number of elements to be initially allocated to the gsl_vector type named independentVariableAvgTemp
 const std::string currentDateTime(BaseClass *);
 // M E M B E R    F U N C T I O N       D E F I N I T I O N    F O R    C L A S S    M A K E C O N N E C T I O N S T R I N G
 BaseClass::BaseClass(CmdLineArgs *cla,  const char ourCase, const char *myUserID, const char *myDatabaseName, const char *myPortID, const char *myHostID, const size_t maxNumberOfAvgTemps)  {
+
     //If true we are running multi-thread. Obviously, multiThread ***MUST*** be the same value for all instances of BaseClass. Default value is FALSE. Command line switch `-t` sets this to TRUE.
     //    memset((void *)this->debugFlags.startHere, 0, THISSIZE); //Experiment on initializing memory in one fell swoop. (DOESN'T WORK)
     /*
@@ -73,7 +75,13 @@ BaseClass::BaseClass(CmdLineArgs *cla,  const char ourCase, const char *myUserID
     results_File = cla->_results_File;
     debugFlags.useKelvin = cla->_useKelvin;
     clUserID = cla->_clUserID;
-
+    clPW = &pwBuffer[0];
+    minBucketTemp = MINTEMPERATURE;
+    buckettemp = minBucketTemp + BUCKETSIZE;
+    maxBucketTemp = MAXTEMPERATURE;
+    thisCount=INITIALVALUE;
+    worthyOfPolynomialFitProcessing = INITIALVALUE;
+    for (k=0; k < NUMBEROFVALUES; k++) values[k] = INITIALVALUE;
     clPW = cla->_clPW;
     clHostID = cla->_clHostID;
     clPortID = cla->_clPortID;
@@ -102,20 +110,25 @@ BaseClass::BaseClass(CmdLineArgs *cla,  const char ourCase, const char *myUserID
     this->ptrObsDepVarArray = NULL;
     this->ptrExpMinusObsDepVarArray = NULL;
     this->ptrIndVariableArray = NULL;
-    this->bufferOffset = 0; // Initialize this counter.
-    this->grc = 0;
-    this->brc = 0;
+    bufferOffset = 0; // Initialize this counter.
+
     this->trc_t = 0;
     
+    minBucketTemp = 0;
+    countOfGoodEntries = 0;
+    loopCounter = 0;
+    rowBeingProcessed = 0;
+    numberOfReturnedRows = 0;
+    numberOfReturnedColumns = 0;
+    grc = 0;
+    brc = 0;
+    k = 0;
+    
+    thisCount = 0;
+    
     memset(this->pwBuffer,0, MAXLENGTHPASSWORD); //Zero-out the password buffer so we don't get fooled by stepping in crap!
-    this->clPW = &pwBuffer[0];
-    this->minBucketTemp = MINTEMPERATURE;
-    this->buckettemp = minBucketTemp + BUCKETSIZE;
-    this->maxBucketTemp = MAXTEMPERATURE;
-    thisCount=INITIALVALUE;
-    worthyOfPolynomialFitProcessing = INITIALVALUE;
-    for (this->k=0; this->k < NUMBEROFVALUES; this->k++) values[k] = INITIALVALUE;
-    this->k=0;
+
+    k=0;
     errmsg = NULL;
     ptrValues = values;
     
@@ -168,6 +181,7 @@ int BaseClass::setArray(int which, int k, double value) {
     }
     return 0;
 }
+
 const char *BaseClass::getPrivate(CmdLineArgs &cla, const char which) {
     switch (which) {
         case 'U':
@@ -189,10 +203,12 @@ const char *BaseClass::getPrivate(CmdLineArgs &cla, const char which) {
 
             std::cerr << "Invalide `which` parameter. The only valid values are: \n`U` for defaultUserID; \n`P` for defaultPortID; \n`D` for defaultDatabaseName; \n`R` for defaultResultsFileName; and \n`H` for defaultHostID. All other values are invalid. We're returning NULL" << std::endl;
             return (NULL);
-            break;
             
     }
 }
+
+
+
 
 
 

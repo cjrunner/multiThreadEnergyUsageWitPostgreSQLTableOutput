@@ -23,12 +23,17 @@
 //
 
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_statistics.h>
 #include "baseClass.hpp" //Need this to resolve the inherited MakeConnectionString class.
+// #include "tblPolyFit.hpp"
 
 // ¿enum bucketColNames is already defined in BaseClass, so why define it again? enum bucketColNames  {_avgtemp, _avgeu, _stddeveu, _mineu, _maxeu, _countu};
 class SetupForMultiFit  {  //SetupForMultiFit inherits from BaseClass
+//    friend class TblPolyFit;    //Grant friendship status to the class namedd TblPolyFit
+//    friend class BaseClass;
 private:
     size_t polynomialDegree; //From constructor parameter;
     size_t numberOfEntries;  // From count
@@ -36,7 +41,13 @@ private:
     size_t &maxNumberOfRows = numberOfEntries;  // Use a c++-type reference rather than a C-type pointer.
     
 public:
-    BaseClass *bc;
+
+//        BaseClass *;
+    BaseClass *bc;    //Why C++ Why Is There “Unknown Type” When Class Header is Included? [duplicate]. \
+        Ans: Resolve build errors due to circular dependency amongst classes \
+    NB: TblPolyFitWithCov.hpp could be causing the circular reference.
+
+
     size_t onePlusPolynomialDegree;
     const  double initialValue = 1;
     double dblwork;
@@ -49,7 +60,9 @@ public:
     double meanOfIndependentVariable;
     double meanOfDependentVariables;
     double traceOfCovarientMatrix;
-    size_t loopCounter;
+    float  oneFloatValue;
+    float *ptrCovarianceMatrixArray;
+    size_t loopCounter; 
     gsl_multifit_linear_workspace *work;
     gsl_matrix *independentVariable;
     gsl_matrix *covarienceMatrix;
@@ -58,7 +71,18 @@ public:
     gsl_vector *computedDependetVariable;
     gsl_vector *weights;
     gsl_vector *coefficients;
+    int row;
+    int col;
     int rc;
+    //2018-06-28T08:40:10: the following doubles have been moved here from being local variables \
+    in member function SetupForMultiFit::computeCorrelationBetweenIndependentAndDependentVariables
+    double  trialComputedDependentVariable;   //2018-06-28T08:40:10
+    double T;                                 //2018-06-28T08:40:10
+    mutable double A;                          //2018-06-28T08:40:10
+    mutable double B;                          //2018-06-28T08:40:10
+    mutable double C;                          //2018-06-28T08:40:10
+    mutable double D;                          //2018-06-28T08:40:10
+    std::ostringstream stringStreamForOutput;         //std::string doesn't work 
     //Declaration of various member functions
     ~SetupForMultiFit();
     SetupForMultiFit(BaseClass *, size_t,  size_t, double *)  ;
@@ -72,23 +96,24 @@ public:
     
     double  getFromVector(gsl_vector *, int); 
     
-    int  outputPolynomial(const char *, const char *);
+    int  outputPolynomial( const char *, const char *);
     
-    double  outputCovarianceMatrix(const char *, const char *);
+    double  outputCovarianceMatrixAndReturnChi2( const char *, const char *);
     
     void captureIndependentVariableValues( int, double []);  //☞Note  that the `[]` is necessary in this declaration
     
     double computeTrace(double *, int);
     
-    double  computeCorrelationBetweenIndependentAndDependentVariables(BaseClass *);
+    double  computeCorrelationBetweenIndependentAndDependentVariables(void);
     
-    double computeGoodnessOfResults (BaseClass *);
+    double computeGoodnessOfResults (void);
     
     double getCoefficient(int );
     
     double getChi2(void);
-    
+    double returnChiSquared( void );
     double getCorrelationCoefficient(void);
+    double   *getPointerToCovarianceMatrix(void);
     //    SetupForMultiFit(size_t polynomialDegree, size_t count, double *);
     //    ~SetupForMultiFit();
     //void setIntoMatrix(gsl_matrix *, int, int, double);
@@ -98,6 +123,6 @@ public:
     //void captureIndependentVariableValues( int, double * );//
     // int doMultiFit(void );
     //int outputPolynomial(const char *);
-    //double outputCovarianceMatrix(const char *);  //Prints out covarience matrix and returns value of χ-squared.
+    //double outputCovarianceMatrixAndReturnChi2(const char *);  //Prints out covarience matrix and returns value of χ-squared.
 };
 #endif /* __SETUPFORMULTIFIT__ */

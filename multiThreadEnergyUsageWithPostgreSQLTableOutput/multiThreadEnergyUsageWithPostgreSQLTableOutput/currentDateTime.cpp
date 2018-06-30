@@ -11,7 +11,9 @@
 #include "currentDateTime.hpp"
 
 // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
-const std::string currentDateTime(BaseClass *bc) {
+
+
+const std::string currentDateTime(BaseClass *bc) { 
     bc->now = time(0);
     bc->tstruct = *localtime(&bc->now);
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime

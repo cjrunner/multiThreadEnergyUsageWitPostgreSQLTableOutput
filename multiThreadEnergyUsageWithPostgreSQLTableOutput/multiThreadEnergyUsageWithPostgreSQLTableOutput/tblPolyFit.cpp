@@ -10,14 +10,15 @@
 #include <stdio.h>
 #include <iostream>
 #include <netinet/in.h>
-
+#include "setupForMultiFit.hpp"
 #include "tblPolyFit.hpp"
 #include "varyingType.hpp"
 // TblPolyFit::TblPolyFit(SetupForMultiFit *smf, const char *cs, int nv, int rsltFmt) {
+/*
 TblPolyFit::TblPolyFit(short pd, int nv, int rsltFmt, bool withCov)  {
 //      T E S T    M O D E       T E S T    M O D E       T E S T    M O D E       T E S T    M O D E
     pdegree = pd; //Set polynomial degree
-    ptrSUMF = NULL; //Indicates constructed for test
+//    this->ptrSUMF = NULL; //Indicates constructed for test
     ptrCoeffNbo = new double[pdegree+1]{}; //This is new. We will try to store our coefficients truely in an arry, complete with the array oid for a double (i.e., FLOAT8ARRAYOID).
     //connString = cs;
     nParams = nv;
@@ -50,25 +51,21 @@ TblPolyFit::TblPolyFit(short pd, int nv, int rsltFmt, bool withCov)  {
     paramTypes = new const Oid[nv]{INT2OID,FLOAT8OID, FLOAT8OID, FLOAT8OID, FLOAT8OID, INT2OID, FLOAT8OID, FLOAT8OID};
     paramLengths = new const  int[nv]{2,8,8,8,8,   2,8,8}; //One array of 4 doubles plus one array of consecutivie instances of 4 bytes
     paramFormats = new const int [nv]{1,1,1,1,1,   1,1,1};
-    /**/
+
     }
 
 //      T E S T    D A T A       T E S T    D A T A       T E S T    D A T A       T E S T    D A T A
 }
-
-TblPolyFit::TblPolyFit(SetupForMultiFit *sumf, short pd, int nv, int rsltFmt, bool withCov) {
+*/
+TblPolyFit::TblPolyFit(float *ptrCovMx, short pd, int nv, int rsltFmt, bool withCov) {
 //      R U N    M O D E       R U N    M O D E       R U N    M O D E       R U N    M O D E
     pdegree = pd; //Set polynomial degree
-    ptrSUMF = sumf; //Save this because sumf is a friend class of ours.
-    VaryingType<float> *tfloat =new VaryingType<float>();  //This tfloat object, for type double, should serve us for making input parameters p2, p3, p4, p5, p7, and p8 in network byte order.
+    this->ptrToCovarianceMatrix = ptrCovMx; //Make our own copy of a pointer to the covariance matrix. \
+    This class, TblPolyFit, deptends upon selectFromTable.cpp to have filled in the cavariance matrix \
+    with values of type float.
+
     ptrCovNbo = new float[pd * pd]{};  //Get another array, that mirrors the original array of covariance data, but this array will have the covariance data in NetworkByteOrder.
-    for (int i=0; i < 4; i++) {
-        for (int j=0; j < 4; j ++) {
-            *(this->ptrCov +sizeof(float)*i +j) = (float)sumf->getFromMatrix(sumf->covarienceMatrix, i, j); //Transfer covariance data into our own internal registers
-            tfloat->in64.d64 = *(ptrCov+i); //Get this one instance of covariance data
-            *(this->ptrCovNbo + i*sizeof(float) +j) = tfloat->out64.d64;
-        } //Inner FOR Loop
-    } //Outter FOR loop
+
     
     //At this point all covariance data should be in Network Byte Order.
     
@@ -81,11 +78,12 @@ TblPolyFit::TblPolyFit(SetupForMultiFit *sumf, short pd, int nv, int rsltFmt, bo
     paramFormats = new const int [nv]{1,1,1,1,1,   1,  1,1,1};
     /**/
 }
+
 TblPolyFit::~TblPolyFit() {
-    #ifdef DOTABLETBLPOLYFITWITHCOV
-    if(ptrSUMF == NULL) delete [] ptrCov;  //Only in test mode do we allocate ptrCov, so now we must delete it because ptrSUMF == NULL => test mode.
+#ifdef DOTABLETBLPOLYFITWITHCOV
+//    if(ptrSUMF == NULL) delete [] ptrCov;  //Only in test mode do we allocate ptrCov, so now we must delete it because ptrSUMF == NULL => test mode.
     delete [] ptrCovNbo;
-    #endif
+#endif
  //   if (paramValues != nullptr || paramValues != (const char *)'\0') delete [] paramValues; 
     if (paramTypes != nullptr) delete [] paramTypes;
     if (paramLengths != nullptr)delete [] paramLengths;
@@ -102,7 +100,7 @@ TblPolyFit::~TblPolyFit() {
  //short int showing polynomial degree ---+          |         |          |          |          |         |          |
  //    SetupForMultiFit            ----+             |          |         |          |          |          |         |          |
 //                                     V             V          V         V          V          V          V         V          V
-int TblPolyFit::doInsertInto(SetupForMultiFit *sumf, short *p1, double *p2, double *p3, double *p4, double *p5, float *p9, short *p6, double *p7, double *p8) {
+int TblPolyFit::doInsertInto(float *ptrCovMx, short *p1, double *p2, double *p3, double *p4, double *p5, float *p9, short *p6, double *p7, double *p8) {
     /*Used for tbl_poly_fit_with_cov, which looks like:
      LocalWeather=# \d tbl_poly_fit_with_cov
      Table "public.tbl_poly_fit_with_cov"
@@ -215,6 +213,7 @@ int TblPolyFit::doInsertInto(SetupForMultiFit *sumf, short *p1, double *p2, doub
     return this->rc;
 }
 #else
+//int doInsertInto(float *ptrCovMx, short *p1, double *p2, double *p3, double *p4, double *p5, float *p9, short *p6, double *p7, double *p8);
 /*  Used for tbl_poly_fit */
 //χ-squared value ---------------------------------------------------------------------------------------------------------------+
 //Correlation Coefficient --------------------------------------------------------------------------------+          |
@@ -224,9 +223,9 @@ int TblPolyFit::doInsertInto(SetupForMultiFit *sumf, short *p1, double *p2, doub
 //coefficient C1 ---------------------------------------------+          |          |          |         |          |
 //coefficient C0 -----------------------------------+         |          |          |          |         |          |
 //short int showing polynomial degree ------+          |         |          |          |          |         |          |
-//    Base Class ----------+                |          |         |          |          |          |         |          |
+//                ----------+                |          |         |          |          |          |         |          |
 //                          V               V          V         V          V          V          V         V          V
-int TblPolyFit::doInsertInto(SetupForMultiFit *sumf, short *p1, double *p2, double *p3, double *p4, double *p5, float *p9, short *p6, double *p7, double *p8) {
+int TblPolyFit::doInsertInto(short *p1, double *p2, double *p3, double *p4, double *p5, float *p9, short *p6, double *p7, double *p8) {
 
     
     VaryingType<short> *tshort =new VaryingType<short>();

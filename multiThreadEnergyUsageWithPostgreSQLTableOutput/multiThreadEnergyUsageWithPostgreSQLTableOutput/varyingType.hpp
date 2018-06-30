@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include <iostream>
+
+
 template<class T> //Class T can be long double (80-bits), double (64 bits), float (32 bits), integer (32 bits), short integer (16 bits).
 class VaryingType {
 private:
@@ -51,4 +53,5 @@ void VaryingType<T>::toNetworkByteOrder(void ) {
 }
 
 #endif /* varyingType_hpp */
+
 

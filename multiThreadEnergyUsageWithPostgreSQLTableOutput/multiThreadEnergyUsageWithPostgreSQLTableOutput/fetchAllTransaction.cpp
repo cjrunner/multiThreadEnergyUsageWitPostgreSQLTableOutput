@@ -10,7 +10,7 @@
 #include "/usr/local/pgsql/pgsql101/include/libpq-fe.h"
 #include "baseClass.hpp"
 #define FETCHALLFAILED 2
-#include "baseClass.hpp"
+/* #include "baseClass.hpp" */
 int fetchAllTransaction(BaseClass *, const char *);
 int fetchAllTransaction(BaseClass *ptrbc, const char *sql, bool doPQclear)  {
     ptrbc->rc[FETCHALLTRANSACTION] = WONDERFUL;

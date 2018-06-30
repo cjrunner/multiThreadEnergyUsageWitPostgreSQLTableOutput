@@ -1,25 +1,25 @@
 //
 //  baseClass.hpp
 //  
-//
+//  Known state 2018-06-29
 //  Created by Clifford Campo on 5/2/18.
 //  Copyright © 2018 CliffordCampo. All rights reserved.
 //
 #ifndef __BASECLASS__
 #define __BASECLASS__
-
+#include <stdio.h>
 #include <typeinfo>
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <string>
-
+#include <sstream>
 #include <gsl/gsl_vector.h> 
 #include "currentDateTime.hpp"
 #include "cmdLineArgs.hpp"
 #include "myPrototypes.hpp"
 #include "alignField.hpp"
-#include "tblPolyFit.hpp"
+//#include "tblPolyFit.hpp"
 //#include "/Users/cjc/c++/energyUsage/energyUsage/BitFlags.hpp"
 #include "BitFlags.hpp"
 
@@ -62,16 +62,19 @@ private: //These values get set during execution time, not during compile time.
     const char *const basicSELECT   = "SELECT avtempf, avtempk, m1kwh, m2kwh, m1m2kwh FROM tbl_energy_usage WHERE date_part('J', date) BETWEEN ";
     size_t lengthOfStaticPartsOfConnectionString = strlen(dbnameEqual) + strlen(useridEqual) + strlen(passwordEqual) + strlen(hostidEqual) + strlen(portidEqual);
     size_t lengthOfDynamicPartsOfConnectionString;
+
     CmdLineArgs *CLA;   //Points to the class named CmdLineArgs. This class is a friend of class CmdLineArgs
     const size_t szPrivateBaseClass = sizeof(szBaseClass) + sizeof(szPrivateBaseClass) + sizeof(maxNumberOfAvgTemps) + sizeof(dbnameEqual) + sizeof(useridEqual) + sizeof(passwordEqual) + sizeof(hostidEqual) + sizeof(portidEqual) + sizeof(basicSELECT) + sizeof(lengthOfStaticPartsOfConnectionString) + sizeof(lengthOfDynamicPartsOfConnectionString) +sizeof(*CLA) + sizeof(szPublicPartsOfBaseClass);
     const size_t szPublicPartsOfBaseClass = szBaseClass - szPrivateBaseClass;
 public:
-    TblPolyFit *ptrTPF;
+    BaseClass* selfptrToBaseClass;
+    void *ptrThisIsReallySetupForMultiFit;
+//    TblPolyFit *ptrTPF;
     const size_t *ptrMaxNumberOfAvgTemps;  //number of elements to be initially allocated to the gsl_vector type named independentVariableAvgTemp 100; //number of elements to be initially allocated to the gsl_vector type named independentVariableAvgTemp
     PGconn *conn; //PostgreSQL's Connection Object
     PGresult *res;
     BitFlags debugFlags;
-    
+    FILE *tmpfile;
     double *ptrExpMinusObsDepVarArray;
     double *ptrObsDepVarArray;
     double *ptrExpDepVarArray;
@@ -88,13 +91,16 @@ public:
     const char *clHostID;
     size_t sizeOfEachArray;
     char pwBuffer[MAXLENGTHPASSWORD];
+    const char *theTempFile;
     const char *results_File;  //Name of the results file
     const char *clPW;
+    const char *errmsgCOPY="";
     char *MCS;
     const char *clSQL; //Points to the sql statement provided in the command line switch, if Any.
     //Variables specifict to selectFromTable
     char *start;
     char *end;
+    std::ostringstream date_Time; //This needs #include <sstream>
     std::ostringstream *ptros;
     std::ofstream myTempFile; //Create an object for writing to a file (an ofstream)
     std::ostringstream *outstring; //Create a pointer to object that replaces std::cout or std::cerr with a character string.
@@ -106,10 +112,13 @@ public:
     int buckettemp;
     int maxBucketTemp;
     int countOfGoodEntries;
+    int countOfBadEntries;
     int loopCounter;
     int rowBeingProcessed;
     int numberOfReturnedRows;
     int numberOfReturnedColumns;
+    int row;
+    int column;
     int rc[8];
     int grc;
     int brc;
@@ -129,6 +138,7 @@ public:
     char *sqlbuffer;
     char *subCharBuffer;
     char *sql;
+    float *floatCovarianceMatrix; //points to space, dynamically acquired in selectFromTable.cpp, to hold the covariance matrix with each element a 32-bit of type float.
     double averageVariencePerValidReading;
     double squareRootOfSumOfTheSquaresOfTheVarience ;
     double values[NUMBEROFVALUES];
@@ -149,6 +159,7 @@ public:
     //
     PGconn  *connI;
     PGresult *resI;
+    PGresult *resC;  //For the copy operation
     int numberOfReturnedRowsI;
     int numberOfReturnedColumnsI;
     char e;

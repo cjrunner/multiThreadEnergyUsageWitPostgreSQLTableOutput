@@ -5,14 +5,23 @@
 //  Created by Clifford Campo on 5/20/18.
 //  Copyright © 2018 CliffordCampo. All rights reserved.
 //
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include <string>
+#include <stdexcept>
+#include <iterator>
+#include <sstream>
 
 #include <stdio.h>
-#include <iostream>
-#include <sstream>
-#include "setupForMultiFit.hpp"
+
+#include <chrono>
+//#include "setupForMultiFit.hpp"
+#include "/Users/cjc/c++/energyUsage/multiThreadEnergyUsageWithPostgreSQLTableOutput/multiThreadEnergyUsageWithPostgreSQLTableOutput/setupForMultiFit.hpp"
 #include "myPrototypes.hpp"
 #include "baseClass.hpp"
-const std::string currentDateTime(BaseClass *);
+std::ostringstream *current_Date_Time(BaseClass *);  //Latest c++ version replaces the C version currentDateTime
 SetupForMultiFit::~SetupForMultiFit() {  //Destructor
     gsl_matrix_free(this->independentVariable);
     gsl_matrix_free(this->covarienceMatrix);
@@ -24,8 +33,8 @@ SetupForMultiFit::~SetupForMultiFit() {  //Destructor
     gsl_vector_free(this->computedDependetVariable);
     
 }
-SetupForMultiFit::SetupForMultiFit(BaseClass *bC, size_t polynomialDegree,  size_t count, double *aOV)   { //Constructor
-    this->bc = bC;
+SetupForMultiFit::SetupForMultiFit(BaseClass *thisIsReallyAPointerToBaseClass, size_t polynomialDegree,  size_t count, double *aOV)   { //Constructor
+    this->bc = thisIsReallyAPointerToBaseClass;
     this->ptrChiSquared = &chiSquared;
     this->arrayOfValues = aOV;
     this->polynomialDegree = polynomialDegree;
@@ -66,51 +75,55 @@ double  SetupForMultiFit::getFromMatrix(gsl_matrix *whichMatrix, int row, int co
 double  SetupForMultiFit::getFromVector(gsl_vector *whichVector, int row) { 
     return ( gsl_vector_get(whichVector, row) );
 }
-int  SetupForMultiFit::outputPolynomial(const char *leadOffString, const char *trailingString) {
-    *this->bc->outstring << currentDateTime(this->bc) << "\t" << leadOffString;
-    for (int coeff = 0; coeff < this->coefficients->size ; coeff++) {
-        if (coeff > 0) {
-            *this->bc->outstring << " + " << gsl_vector_get(this->coefficients, coeff) << "*T^" << coeff;
+int  SetupForMultiFit::outputPolynomial( const char *leadOffString, const char *trailingString) {
+//2018-06-27T05:57:25 Added `BaseClass to Calling Sequence, so I can get to bc->outstring more easily.
+    this->stringStreamForOutput << current_Date_Time(this->bc) << "\t" << leadOffString;
+    for (this->row = 0; this->row < this->coefficients->size ; this->row++) {
+        if (this->row > 0) {
+            this->stringStreamForOutput << " + " << gsl_vector_get(this->coefficients, this->row) << "*T^" << this->row;
         } else {
-            *this->bc->outstring << gsl_vector_get(this->coefficients, coeff) ;
+            this->stringStreamForOutput << gsl_vector_get(this->coefficients, this->row) ;
         }
     }
-    *this->bc->outstring << trailingString << "\n";
+    this->stringStreamForOutput << trailingString << "\n";
     return 0;
 }
-double  SetupForMultiFit::outputCovarianceMatrix(const char *leadOffString, const char *trailingString) {
+double  SetupForMultiFit::outputCovarianceMatrixAndReturnChi2( const char *leadOffString, const char *trailingString) {
     // unused    double firstC = *this->ptrChiSquared;
-    for (int row = 0; row < this->covarienceMatrix->size1; row++) {
-        *this->bc->outstring << currentDateTime(this->bc) << "\t" << leadOffString;
-        for (int col = 0; col < this->covarienceMatrix->size2; col++) {
-            *this->bc->outstring  << *(this->covarienceMatrix->data + this->covarienceMatrix->size1*row + col);
+    //2018-06-27T05:57:25 Added `BaseClass to Calling Sequence, so I can get to bc->outstring more easily.
+ //                *ptrbc->outstringOS << smf->outputCovarianceMatrixAndReturnChi2(ptrbc, "cov = [", cases[ptrbc->debugFlags.intMyCase] ) << "☜ χ-squared" << cases[ptrbc->debugFlags.intMyCase] << "\n";
+    for (this->row = 0; this->row < this->covarienceMatrix->size1; this->row++) {
+
+        this->stringStreamForOutput << current_Date_Time(this->bc) << "\t" << leadOffString;
+        for (this->col = 0; this->col < this->covarienceMatrix->size2; this->col++) {
+            stringStreamForOutput  << *(this->covarienceMatrix->data + this->covarienceMatrix->size1*this->row + this->col);
+            //Here we will insert the value of covariance matrix into our array of data reserved for it;
+            this->oneFloatValue = *(this->covarienceMatrix->data + this->covarienceMatrix->size1*this->row + this->col);
+            *(this->ptrCovarianceMatrixArray + this->covarienceMatrix->size1 * this->row + this->col) = this->oneFloatValue;
             if (col < this->covarienceMatrix->size1 - 1) {
-                *this->bc->outstring << ", "; //Output a comma to separate covarient values
+               stringStreamForOutput << ", "; //Output a comma to separate covarient values
             } else {
                 //Output closed brackets if we've just output the rightmost covarient value for this row.
-                *this->bc->outstring << "]\t " << trailingString << "\n";
+                stringStreamForOutput << "]\t " << trailingString << "\n";
             }
         }  //End of inner for loop (col)
     } // End of outter for loop (row)
     return *this->ptrChiSquared;
 }
-double SetupForMultiFit::getCoefficient(int coeff) {
-    return gsl_vector_get(this->coefficients, coeff );
+double SetupForMultiFit::returnChiSquared( ) {
+    return *this->ptrChiSquared;
 }
-
-
-double  SetupForMultiFit::computeCorrelationBetweenIndependentAndDependentVariables (BaseClass *bc) {
+double  SetupForMultiFit::computeCorrelationBetweenIndependentAndDependentVariables ( ) {
    
-    double trialComputedDependentVariable=0;
-    const double A = gsl_vector_get(this->coefficients, 0);
-    const double B = gsl_vector_get(this->coefficients, 1);
-    const double C = gsl_vector_get(this->coefficients, 2);
-    const double D = gsl_vector_get(this->coefficients, 3);
-    double T;
-    for (int i=0; i< this->numberOfEntries; i++) {
-        T = bc->BaseClass::indVarArray[i];
-        trialComputedDependentVariable = A + (B  +  (C  + D *T )* T) * T;
-        bc->BaseClass::depVarArray[i]= trialComputedDependentVariable;
+    this->trialComputedDependentVariable=0;
+    this->A = gsl_vector_get(this->coefficients, 0);
+    this->B = gsl_vector_get(this->coefficients, 1);
+    this->C = gsl_vector_get(this->coefficients, 2);
+    this->D = gsl_vector_get(this->coefficients, 3);
+    for (this->row=0; this->row < this->numberOfEntries; this->row++) {
+       this->T = this->bc->indVarArray[this->row];
+        this->trialComputedDependentVariable = this->A + (this->B  +  (this->C  + this->D *this->T )* this->T) * this->T; 
+        this->bc->depVarArray[this->row]= trialComputedDependentVariable;
     }
     this->meanOfIndependentVariable = gsl_stats_mean(bc->BaseClass::indVarArray, 1, this->numberOfEntries);
     this->meanOfDependentVariables = gsl_stats_mean(bc->BaseClass::depVarArray, 1, this->numberOfEntries);
@@ -119,11 +132,10 @@ double  SetupForMultiFit::computeCorrelationBetweenIndependentAndDependentVariab
     return this->correlationCoefficient ;
 }
 
-double  SetupForMultiFit::computeGoodnessOfResults (BaseClass *bc) {
+double  SetupForMultiFit::computeGoodnessOfResults ( ) {
     //computeGoodnessOfResults defines GoodnessOfResults as the square of the accumulated normalized difference between the expected (modeled)
     //and observed dependent variables ( ∑(((modeledResultForEachIndependentVariable - eachObservedDependentVariable)/modeledResultForEachIndependentVariable))^2 ).
     //Return the square root of the sum of the squares of the percent difference between the expected (modeled) and observed dependent variables.
-    int i=0;
     double trialComputedDependentVariable=0;
     double accumulatedVarience2 = 0;
     double delta=0;
@@ -133,13 +145,13 @@ double  SetupForMultiFit::computeGoodnessOfResults (BaseClass *bc) {
     const double C = gsl_vector_get(this->coefficients, 2);
     const double D = gsl_vector_get(this->coefficients, 3);
     double T;
-    for (i=0; i<  bc->grc; i++) {
-        T = *(bc->BaseClass::ptrIndVariableArray + i);
+    for (this->row=0; this->row <  this->bc->grc; this->row++) {
+        T = *(this->bc->ptrIndVariableArray + this->row);
         trialComputedDependentVariable = A + (B  +  (C  + D *T )* T) * T;
-        *(bc->BaseClass::ptrExpDepVarArray + i)= trialComputedDependentVariable;
-        delta = (*(bc->BaseClass::ptrExpDepVarArray + i) - *(bc->BaseClass::ptrObsDepVarArray + i));
-        *(bc->BaseClass::ptrExpMinusObsDepVarArray + i) = delta;
-        deltaNormalized =  delta/(*(bc->BaseClass::ptrExpDepVarArray + i) );
+        *(this->bc->ptrExpDepVarArray + this->row)= trialComputedDependentVariable;
+        delta = (*(this->bc->ptrExpDepVarArray + this->row) - *(this->bc->ptrObsDepVarArray + this->row));
+        *(this->bc->ptrExpMinusObsDepVarArray + this->row) = delta;
+        deltaNormalized =  delta/(*(this->bc->ptrExpDepVarArray + this->row) );
         accumulatedVarience2 += ( deltaNormalized *  deltaNormalized ); //Accumulate the square of normalized varience.
     }
     

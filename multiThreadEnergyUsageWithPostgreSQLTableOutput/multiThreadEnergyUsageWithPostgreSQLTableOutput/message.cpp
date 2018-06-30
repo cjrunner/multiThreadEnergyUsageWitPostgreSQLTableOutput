@@ -30,6 +30,7 @@ extern const char *copy_file[];
 extern const char *theMotherOfAllUnionSelectStatements[];
 extern const char *copySQL;
 extern const char *dependentVariableColumn[];
+extern const char *theCaseLabels[];
 //extern const char *dropThenCreateTempTable;
 extern const char *drop_tbl_temp_eu[];
 extern const char *create_tbl_temp_eu[];
@@ -98,6 +99,7 @@ const char *motherOfAllSelectStatements[] = { \
       .          .            .          .           .          .           .          .     .       .           .      .      .           .               .
       .          .            .          .           .          .           .          .     .       .           .      .      .           .               .
  */
+const char *theCaseLabels[] = {"m1m2kwh", "m1kwh", "m2kwh"};
 const char *dependentVariableColumn[] = {"m1m2kwh", "m1kwh", "m2kwh"};
 extern const short numberOfThreads = sizeof(dependentVariableColumn)/sizeof(BFM);  //Note Well: doing just sizeof(dependentVariableColumn) \
 give the length of three pointer types. by divinding sizeof(dependentVariableColumn) by the sizeof one typical pointer we get the \
@@ -135,9 +137,9 @@ const char *dropTable[] = {"DROP TABLE IF EXISTS tbl_bucketized_by_tempf_ranges0
 */
 //
 //
-const char *createTable[] = {"CREATE TABLE IF NOT EXISTS tbl_bucketized_by_tempf_ranges0  (ID serial PRIMARY KEY,avgTemp float8,avgEU float8, stddevEU float8, minEU float8, maxEU float8, countEU int);",
-    "CREATE TABLE IF NOT EXISTS tbl_bucketized_by_tempf_ranges1  (ID serial PRIMARY KEY,avgTemp float8,avgEU float8, stddevEU float8, minEU float8, maxEU float8, countEU int);",
-    "CREATE TABLE IF NOT EXISTS tbl_bucketized_by_tempf_ranges2  (ID serial PRIMARY KEY,avgTemp float8,avgEU float8, stddevEU float8, minEU float8, maxEU float8, countEU int);"};
+const char *createTable[] = {"DROP TABLE IF EXISTS  tbl_bucketized_by_tempf_ranges0; CREATE TABLE IF NOT EXISTS tbl_bucketized_by_tempf_ranges0  (ID serial PRIMARY KEY,avgTemp float8,avgEU float8, stddevEU float8, minEU float8, maxEU float8, countEU int);",
+    "DROP TABLE IF EXISTS  tbl_bucketized_by_tempf_ranges1; CREATE TABLE IF NOT EXISTS tbl_bucketized_by_tempf_ranges1  (ID serial PRIMARY KEY,avgTemp float8,avgEU float8, stddevEU float8, minEU float8, maxEU float8, countEU int);",
+    "DROP TABLE IF EXISTS  tbl_bucketized_by_tempf_ranges2; CREATE TABLE IF NOT EXISTS tbl_bucketized_by_tempf_ranges2  (ID serial PRIMARY KEY,avgTemp float8,avgEU float8, stddevEU float8, minEU float8, maxEU float8, countEU int);"};
 //
 //
 //

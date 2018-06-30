@@ -18,8 +18,8 @@
 #include "/usr/local/pgsql/pgsql101/include/libpq-fe.h"
 #include "myPrototypes.hpp"
 #include "baseClass.hpp"
+//#include "setupForMultiFit.hpp"
 #include "setupForMultiFit.hpp"
-
 
 using namespace std;
 extern const char *insertIntoTable[];
@@ -35,7 +35,7 @@ int insertBucketizedEnergyValuesIntoTable( double avgtemp, \
     
     ptrbc->sqlI = new char [400];
     
-    ptrbc->BaseClass::indVarArray [ ptrbc->debugFlags.countOfGoodEntries - 1] = avgtemp;
+    ptrbc->BaseClass::indVarArray [ ptrbc->countOfGoodEntries - 1] = avgtemp;
     sprintf (ptrbc->sqlI, insertIntoTable[ptrbc->debugFlags.intMyCase], avgtemp, avgeu, stddeveu, mineu, maxeu, counteu);  //CREATE the insert into SQL statement
     if ( ptrbc->debugFlags.debug3  ) std::cout << "Insert looks like: " << ptrbc->sqlI << std::endl;
 
